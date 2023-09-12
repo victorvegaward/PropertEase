@@ -1,0 +1,188 @@
+/* clears the ‘X’ from Internet Explorer */
+input[type=search]::-ms-clear { display: none; width : 0; height: 0; }
+input[type=search]::-ms-reveal { display: none; width : 0; height: 0; }
+/* clears the ‘X’ from Chrome */
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration { display: none; }
+
+html body {
+    min-height: 100vh;
+    font-family: 'Roboto', sans-serif;
+}
+.header-logo {
+    height: 80px;
+    width: 80px;
+    margin-left: 20px;
+}
+.navbar {
+    display: flex;
+    flex-direction: row;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    height: 10vh;
+}
+.navbar-elements{
+    position: absolute;
+    right: 20px;
+    margin-top: 20px;
+    padding-top: 12px;
+    height: 0;
+}
+
+input:focus, textarea:focus, select:focus{
+    outline: none;
+}
+
+#doctor-name{
+    display: flex;
+    align-items: center;
+    width: 70%;
+}
+
+
+#search-input{
+    display: flex;
+    width: 100%;
+}
+
+#map{
+  width: 100%;
+  height: 100%; 
+  /* margin: 50px; */
+  
+}
+#search{
+    height: 90vh;
+    width: 30vw;
+    padding: 30px;
+}
+
+#map-view{
+    height: 90vh;
+    width: 70vw;
+    padding: 30px;
+}
+#main{  
+    height: 90vh;
+}
+
+#doctors{
+    height: 75vh;
+    padding-top: 40px;
+}
+
+#submit {
+    float: right;
+    background-color: #2292A4;
+    color: white;
+    padding: 7px 20px;
+    cursor: pointer;
+}
+
+.doctor {
+    display: flex;
+    height: 8vh;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-top: 10px;
+    border-width: 0px 0px 1px 0px;
+}
+
+.doctor-photo {
+    font-size: 48px;
+    color: #336AEB;
+}
+
+.doctor-photo-wrapper{
+    width: 10%;
+}
+
+.doctor-name{
+    width: 60%;
+    padding-left: 20px;
+}
+
+.doctor-specialty{
+    width: 30%;
+}
+
+.star {
+    font-size: 14px;
+    color:  #ffa41b;
+}
+
+.navbar-elements a {
+    margin: 20px;
+}
+.about-header {
+    font-size: 3em;
+}
+.about-content h1 {
+    display: flex;
+    justify-content: center;
+    font-size: 4em;
+}
+.about-content  {
+    position: absolute;
+    left: 50vw;
+    width: 500px;
+    margin-left: -250px;
+}
+
+.nav-element {
+    border-width: 1px 1px 1px 1px;
+    padding: 5px 10px;
+
+}
+
+.event-header {
+    display: flex;
+    justify-content: center;
+    font-size: 4em;
+}
+.event-content {
+    display: flex;
+    justify-content: center;
+    font-size: 1.5em;
+}
+.doc-image{
+    float: left; 
+    margin: 0px 15px 0px 0px; 
+    max-width: 25vw;
+    max-height: 25vh; 
+    margin-left: 3vw;
+    display: flexbox;
+
+}
+.select-date{
+    align-items: center; 
+    align-self: center; 
+    max-width: 25vw; 
+    font-size: larger; 
+    display:flexbox; 
+    float: left;
+    margin-left: 10vw; 
+    margin-top: 3vh;
+}
+.available-times{
+    width:25vw;
+    display:flexbox; 
+    margin-top: 10px;
+}
+.submit-button{
+    margin-top:30px;
+}
+.center{
+    text-align: center;
+}
+.doctor-nameP{
+    font-size: xx-large;
+    text-align: center;
+}
+.specialties{
+    font-size: x-large;
+}
+.large-text{
+   font-size: large;
+}
