@@ -48,8 +48,8 @@ class Event:
     def set_appointment_id(self, appointment_id: str):
         if type(appointment_id) != str:
             raise TypeError("appointment_id must be a string")
-        if len(appointment_id) != 40:
-            raise ValueError("appointment_id must be 40 characters long")
+        # if len(appointment_id) != 40:
+        #     raise ValueError("appointment_id must be 40 characters long")
         self.appointment_id = appointment_id
 
     def set_doctor_id(self, doctor_id: str):

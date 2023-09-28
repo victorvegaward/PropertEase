@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&family=Whisper&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/style.css">
+    <title>AppointMED - Sign In/Sign Up</title>
+
+</head>
+<body>
+    <div class="navbar">
+        <img class="header-logo" src="../static/images/AppointMED.svg" alt="AppointMED logo">
+        <div class="navbar-elements">
+            <a class="nav-element border-transparent rounded-full hover:border-emerald-500" href="/home">Home</a>
+            <a class="nav-element border-transparent rounded-full hover:border-emerald-500" href="/about">About</a>
+        </div>
+    </div>
+    <div class="auth-container flex center">
+        <!-- Sign In Form -->
+        <div class="auth-form" id="signin-form">
+            <h2 class="center">Sign In</h2>
+            <form method="post" action="/signin">
+                <div class="input-group">
+                    <label for="signin-email">Email:</label>
+                    <input type="email" id="signin-email" name="email" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="signin-password">Password:</label>
+                    <input type="password" id="signin-password" name="password" required>
+                </div>
+
+                <div class="submit-button center">
+                    <input class="cursor-pointer" type="submit" value="Sign In">
+                </div>
+            </form>
+
+            <p class="center">Don't have an account? <a href="#" id="show-signup">Sign Up</a></p>
+        </div>
+
+        <!-- Sign Up Form (Initially hidden) -->
+        <div class="auth-form" id="signup-form" style="display:none;">
+            <h2 class="center">Sign Up</h2>
+            <form method="post" action="/signup">
+                <div class="input-group">
+                    <label for="signup-name">Full Name:</label>
+                    <input type="text" id="signup-name" name="fullname" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="signup-email">Email:</label>
+                    <input type="email" id="signup-email" name="email" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="signup-password">Password:</label>
+                    <input type="password" id="signup-password" name="password" required>
+                </div>
+
+                <div class="submit-button center">
+                    <input class="cursor-pointer" type="submit" value="Sign Up">
+                </div>
+            </form>
+
+            <p class="center">Already have an account? <a href="#" id="show-signin">Sign In</a></p>
+        </div>
+    </div>
+
+    <script src="../static/js/script.js"></script>
+    <script>
+        document.getElementById('show-signup').addEventListener('click', function() {
+            document.getElementById('signin-form').style.display = 'none';
+            document.getElementById('signup-form').style.display = 'block';
+        });
+
+        document.getElementById('show-signin').addEventListener('click', function() {
+            document.getElementById('signup-form').style.display = 'none';
+            document.getElementById('signin-form').style.display = 'block';
+        });
+    </script>
+</body>
+
+</html>

@@ -2,20 +2,23 @@ import os
 import certifi
 from flask import Flask, render_template, request, redirect
 from flask_pymongo import PyMongo
-
+from flask_bcrypt import Bcrypt
+from flask import flash, session, url_for
 from appointment import Appointment
 from doctor import Doctor
 from event import Event
+from user import User
 
 # -- Initialization section --
 app = Flask(__name__)
+app.config["SECRET_KEY"] = "MedEasy"
 
 # name of database
-app.config["MONGO_DBNAME"] = "PropertEase"
+app.config["MONGO_DBNAME"] = "MedEasy"
 
 # URI of database
 app.config[
-    'MONGO_URI'] = "mongodb+srv://PropertEase:PropertEase@cluster0.zc1kdsn.mongodb.net/PropertEase"
+    'MONGO_URI'] = "mongodb+srv://MedEasy:MedEasy@cluster0.l8xpye7.mongodb.net/MedEasy"
 
 time_slots = ["08:00am", "08:30am", "09:00am", "09:30am", "10:00am", "10:30am", "11:00am", "11:30am", "12:00pm",
               "12:30pm", "01:00pm", "01:30pm", "02:00pm", "02:30pm", "03:00pm", "03:30pm", "04:00pm", "04:30pm"]
@@ -24,19 +27,26 @@ doctor_ids = {"Richard Silverstein": "1234"}
 
 mongo = PyMongo(app, tlsCAFile=certifi.where())
 
-
+bcrypt = Bcrypt(app)
 # mongo.db.create_collection('doctors')
 
 @app.route("/")
 @app.route("/home", methods=["GET", "POST"])
 def home():
+    # Check if the user is logged in
+    if 'user_id' not in session:
+        flash('Please login to access this page.', 'warning')
+        return redirect(url_for('signin'))
+
     if request.method == "GET":
         doctors = Doctor.get_doctors(mongo)
-    else:
+    else:  # i.e., POST
         specialty = request.form['doctor-specialty']
         name = request.form['doctor-name']
         doctors = Doctor.get_filtered_doctors(mongo, specialty, name)
+
     return render_template("home.html", doctors=doctors)
+
 
 
 @app.route("/about")
@@ -97,20 +107,20 @@ def confirmed_event(appt_id):
 
 @app.route("/seed_db")
 def seed_db():
-    # collection = mongo.db.events
+    collection = mongo.db.events
     # collection.remove({})
     doc_id = doctor_ids["Richard Silverstein"]
-    # collection = mongo.db.events
-    event1 = Event.create_event("22-06-2022", "08:30am", "2423fe323", doc_id, mongo)
-    event2 = Event.create_event("09:30am", "04/25/2022", "2423fe323", doc_id, mongo)
-    event3 = Event.create_event("10:30am", "04/25/2022", "2423fe323", doc_id, mongo)
-    event4 = Event.create_event("11:30am", "04/25/2022", "2423fe323", doc_id, mongo)
-    event5 = Event.create_event("01:30pm", "04/25/2022", "2423fe323", doc_id, mongo)
+    collection = mongo.db.events
+    # event1 = Event.create_event("22/06/2022", "08:30am", "2423fe323", doc_id, mongo)
+    event2 = Event.create_event("04/25/2022", "09:30am", "2423fe323", doc_id, mongo)
+    event3 = Event.create_event("04/25/2022", "10:30am", "2423fe323", doc_id, mongo)
+    event4 = Event.create_event("04/25/2022", "11:30am",  "2423fe323", doc_id, mongo)
+    event5 = Event.create_event("04/25/2022", "01:30pm",  "2423fe323", doc_id, mongo)
 
     collection = mongo.db.doctors
     Doctor.create_doctor("John", "Green", ['dermatologist', "allergist"],
                          "2925 Sycamore Dr # 204, Simi Valley, CA 93065, United States", 18.368650, -66.053291,
-                         ["United Health", "Triple S"], 7876899012,
+                         ["United Health", "Triple S"], "787-689-9012",
                          "https://totalcommercial.com/photos/1/206401-resized.jpg", mongo)
     doctor1 = Doctor.create_doctor("Damaris", "Torres", ["neurologist"], "San Juan, P.R.", 18.466333, -66.105721,
                                    ["Triple S", "Medicaid"], "787-777-7776", 'url()', mongo)
@@ -121,6 +131,40 @@ def seed_db():
 
     return "seeded successfully"
 
-@app.route("/SignIn")
-def sign_in():
-    return render_template("Login-Template.html")
+# ... (other imports)
+from flask_bcrypt import Bcrypt
+from flask import flash, session, url_for
+
+bcrypt = Bcrypt(app)
+
+# Sign-Up Logic
+@app.route('/signin', methods=['GET', 'POST'])
+def signin():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        
+        user = User.query.filter_by(email=email).first()
+
+        if user and bcrypt.check_password_hash(user.password, password):
+            session['user_id'] = user.id
+            flash('Login successful!', 'success')
+            return redirect(url_for('home'))
+        else:
+            flash('Login unsuccessful. Check email and password', 'danger')
+    return render_template('login.html')  # Assuming your HTML is named 'login.html'
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        email = request.form.get('email')
+        password = request.form.get('password')
+        hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+
+        user = User.create_user(username=username, email=email, password=hashed_password, database=mongo.db)
+
+        flash('Account created!', 'success')
+        return redirect(url_for('home'))
+    return render_template('signup.html')  # Assuming you have a separate 'signup.html'
+
