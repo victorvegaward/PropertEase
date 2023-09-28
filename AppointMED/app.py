@@ -34,9 +34,9 @@ bcrypt = Bcrypt(app)
 @app.route("/home", methods=["GET", "POST"])
 def home():
     # Check if the user is logged in
-    if 'user_id' not in session:
-        flash('Please login to access this page.', 'warning')
-        return redirect(url_for('signin'))
+    # if 'user_id' not in session:
+    #     flash('Please login to access this page.', 'warning')
+    #     return redirect(url_for('signin'))
 
     if request.method == "GET":
         doctors = Doctor.get_doctors(mongo)
