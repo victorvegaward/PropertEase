@@ -8,10 +8,17 @@ from appointment import Appointment
 from doctor import Doctor
 from event import Event
 from user import User
+from werkzeug.security import check_password_hash
+import hashlib
+import binascii
+
+
 
 # -- Initialization section --
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "MedEasy"
+app.config['SECURITY_PASSWORD_HASH'] = 'bcrypt'
+app.config['SECURITY_PASSWORD_SALT'] = 'MedEasy'
 
 # name of database
 app.config["MONGO_DBNAME"] = "MedEasy"
@@ -95,7 +102,7 @@ def schedule(doc_id):
                                doctor_phone=phone, medical_plans=medical_plans)
 
 
-@app.route("/<appt_id>")
+@app.route("/appointment/<appt_id>")
 def confirmed_event(appt_id):
     event = Event.get_event(appt_id, mongo)
     date = event.get_date()
@@ -135,7 +142,6 @@ def seed_db():
 from flask_bcrypt import Bcrypt
 from flask import flash, session, url_for
 
-bcrypt = Bcrypt(app)
 
 # Sign-Up Logic
 @app.route('/signin', methods=['GET', 'POST'])
@@ -144,15 +150,25 @@ def signin():
         email = request.form.get('email')
         password = request.form.get('password')
         
-        user = User.query.filter_by(email=email).first()
+        user = User.get_user_by_email(email, mongo)
+        # Testing
+        hashed = hash_password("test2")
+        print(f"Hashed: {hashed}")
 
-        if user and bcrypt.check_password_hash(user.password, password):
-            session['user_id'] = user.id
+        # Simulating stored password in DB
+        stored_in_db = hashed
+
+        # Verifying
+        is_valid = verify_password(stored_in_db, "test2")
+        print(f"Is Valid: {is_valid}")
+        if user and verify_password(user.password, password):
+            session['user_id'] = user.username
             flash('Login successful!', 'success')
             return redirect(url_for('home'))
         else:
+            print("incorrect")
             flash('Login unsuccessful. Check email and password', 'danger')
-    return render_template('login.html')  # Assuming your HTML is named 'login.html'
+    return render_template('Login.html')  # Assuming your HTML is named 'login.html'
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -160,11 +176,22 @@ def signup():
         username = request.form.get('username')
         email = request.form.get('email')
         password = request.form.get('password')
-        hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-
+        hashed_password = hash_password(password)
+        print(hashed_password)
         user = User.create_user(username=username, email=email, password=hashed_password, database=mongo.db)
-
+        session['user_id'] = user.username
         flash('Account created!', 'success')
         return redirect(url_for('home'))
     return render_template('signup.html')  # Assuming you have a separate 'signup.html'
 
+def hash_password(password: str) -> str:
+    """Hash a password using PBKDF2 and return the hexdigest."""
+    dk = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), b'', 100000)
+    return dk.hex()
+
+def verify_password(stored_password: str, provided_password: str) -> bool:
+    """Verify a password against its hashed version."""
+    # Calculating the hash of the provided_password
+    hashed_provided_password = hash_password(provided_password)
+
+    return hashed_provided_password == stored_password
