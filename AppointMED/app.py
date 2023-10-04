@@ -102,7 +102,7 @@ def schedule(doc_id):
                                doctor_phone=phone, medical_plans=medical_plans)
 
 
-@app.route("/appointment/<appt_id>")
+@app.route("/<appt_id>")
 def confirmed_event(appt_id):
     event = Event.get_event(appt_id, mongo)
     date = event.get_date()
@@ -173,12 +173,18 @@ def signin():
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
-        username = request.form.get('username')
+        first = request.form.get('first_name')
+        last = request.form.get('last_name')
         email = request.form.get('email')
         password = request.form.get('password')
+        specialties = request.form.getlist('specialties')
         hashed_password = hash_password(password)
-        print(hashed_password)
-        user = User.create_user(username=username, email=email, password=hashed_password, database=mongo.db)
+        address = request.form.get('address')
+        medical_coverages = request.form.getlist('medical_coverages')
+        phone_number = request.form.get('phone_number')
+        photo_url = request.form.get('photo_url')
+        user = User.create_user(username=email, email=email, password=hashed_password, database=mongo.db)
+        doctor = Doctor.create_doctor(first,last,specialties,address,0.0,0.0,medical_coverages,phone_number,photo_url,mongo.db)
         session['user_id'] = user.username
         flash('Account created!', 'success')
         return redirect(url_for('home'))

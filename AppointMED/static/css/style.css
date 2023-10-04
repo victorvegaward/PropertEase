@@ -21,6 +21,7 @@ html body {
     flex-direction: row;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     height: 10vh;
+    flex-shrink: auto; 
 }
 .navbar-elements{
     position: absolute;
@@ -188,18 +189,24 @@ input:focus, textarea:focus, select:focus{
 }
 .auth-container {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: space-around;
+    /* align-items: center;
     height: 80vh;
-    padding: 20px;
+    padding: 0px; */
 }
 
 .auth-form {
-    width: 30%;
-    padding: 20px;
+    /* display: block;
+    width: 50%;
+
+
+ */
+    width: 45%; /* This makes each form take up roughly half of the container's width, adjust as necessary */
+    margin: 1em;
+    box-sizing: border-box;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
-    margin: 0 20px;
+    padding: 50px;
 }
 
 .input-group {
@@ -230,4 +237,36 @@ input:focus, textarea:focus, select:focus{
 .auth-divider span {
     background-color: #ffffff;
     padding: 0 20px;
+}
+
+.auth-container {
+    max-width: 90%;
+    overflow-y: auto; /* Scroll if content overflows */
+    flex-grow: 1; /* Takes the available space */
+}
+
+.insurance-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.insurance-list input {
+    margin-bottom: 10px;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    overflow: visible; 
+}
+
+.admin-signup {
+    display: block;
+}
+
+input[type="radio"],
+label {
+    display: inline-block;
+    vertical-align: middle; /* Ensures vertical alignment */
+    font-size: small;
 }

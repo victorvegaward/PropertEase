@@ -13,14 +13,16 @@
 
 </head>
 <body>
-    <div class="navbar">
-        <img class="header-logo" src="../static/images/MedEasy.svg" alt="MedEasy logo">
-        <div class="navbar-elements">
-            <a class="nav-element border-transparent rounded-full hover:border-emerald-500" href="/home">Home</a>
-            <a class="nav-element border-transparent rounded-full hover:border-emerald-500" href="/about">About</a>
+    <div class="blocking">
+        <div class="navbar">
+            <img class="header-logo" src="../static/images/MedEasy.svg" alt="MedEasy logo">
+            <div class="navbar-elements">
+                <a class="nav-element border-transparent rounded-full hover:border-emerald-500" href="/home">Home</a>
+                <a class="nav-element border-transparent rounded-full hover:border-emerald-500" href="/about">About</a>
+            </div>
         </div>
     </div>
-    <div class="auth-container flex center">
+    <div class="auth-container">
         <!-- Sign In Form -->
         <div class="auth-form" id="signin-form">
             <h2 class="center">Sign In</h2>
@@ -43,15 +45,20 @@
             <p class="center">Don't have an account? <a href="#" id="show-signup">Sign Up</a></p>
         </div>
 
-        <!-- Sign Up Form (Initially hidden) -->
-        <div class="auth-form" id="signup-form" style="display:none;">
+        <div class="auth-form" id="signup-form">
             <h2 class="center">Sign Up</h2>
-            <form method="post" action="/signup">
-                <div class="input-group">
-                    <label for="signup-name">Full Name:</label>
-                    <input type="text" id="signup-name" name="username" required>
-                </div>
+            
+            <!-- Account Type Selection -->
+            <div class="input-group">
+                <label>Account Type:</label>
+                <input type="radio" id="patient" name="accountType" value="patient" checked>
+                <label for="patient">Patient</label>
+                <input type="radio" id="administrator" name="accountType" value="administrator">
+                <label for="administrator">Hospital Administrator</label>
+            </div>
 
+            <!-- Common Fields -->
+            <form method="post" action="/signup">
                 <div class="input-group">
                     <label for="signup-email">Email:</label>
                     <input type="email" id="signup-email" name="email" required>
@@ -61,12 +68,61 @@
                     <label for="signup-password">Password:</label>
                     <input type="password" id="signup-password" name="password" required>
                 </div>
-
+            <div class="admin-signup">
+                <!-- Administrator Fields (Initially hidden) -->
+                <div id="administrator-fields" style="display:none;">
+                    <div class="input-group">
+                        <label for="first_name">First Name:</label>
+                        <input type="text" id="first_name" name="first_name" required>
+                    </div>
+                
+                    <div class="input-group">
+                        <label for="last_name">Last Name:</label>
+                        <input type="text" id="last_name" name="last_name" required>
+                    </div>
+                
+                    <select name="specialties" multiple>
+                        <option value="Cardiologist">Cardiologist</option>
+                        <option value="Dermatologist">Dermatologist</option>
+                        <option value="Allergist">Allergist</option>
+                        <option value="General Practitioner">General</option>
+                        <option value="Pediatrician">Pediatrician</option>
+                        <option value="Orthopedist">Orthopedist</option>
+                        <option value="Ophtalmologist">Ophtalmologist</option>
+                        <option value="Radiologist">Radiologist</option>
+                        <!-- other options -->
+                    </select>
+                      
+                
+                    <div class="input-group">
+                        <label for="address">Address:</label>
+                        <input type="text" id="address" name="address" required>
+                    </div>
+                
+                    <select name="medical_coverages" multiple>
+                        <option value="Triple S">Triple S</option>
+                        <option value="First Medical">First Medical</option>
+                        <option value="Humana">Humana</option>
+                        <!-- other options -->
+                    </select>
+                
+                    <div class="input-group">
+                        <label for="phone_number">Phone Number:</label>
+                        <input type="tel" id="phone_number" name="phone_number" required>
+                    </div>
+                
+                    <div class="input-group">
+                        <label for="photo_url">Photo URL:</label>
+                        <input type="url" id="photo_url" name="photo_url">
+                    </div>
+                
+                </div>
+            </div>
                 <div class="submit-button center">
                     <input class="cursor-pointer" type="submit" value="Sign Up">
                 </div>
             </form>
-
+            
             <p class="center">Already have an account? <a href="#" id="show-signin">Sign In</a></p>
         </div>
     </div>
@@ -82,7 +138,45 @@
             document.getElementById('signup-form').style.display = 'none';
             document.getElementById('signin-form').style.display = 'block';
         });
-    </script>
+        document.querySelectorAll('input[name="accountType"]').forEach(function(radio) {
+            radio.addEventListener('change', function() {
+                const adminFields = document.getElementById('administrator-fields');
+                if (this.value === 'administrator') {
+                    adminFields.style.display = 'block';
+                } else {
+                    adminFields.style.display = 'none';
+                }
+            });
+        });
+    function addField(containerId, fieldName) {
+        var container = document.getElementById(containerId);
+        var input = document.createElement('input');
+        input.type = 'text';
+        input.name = fieldName;
+        container.appendChild(input);
+    }
+    document.getElementById('add-insurance').addEventListener('click', function(e) {
+        e.preventDefault(); // prevent default button action
+        const newInput = document.createElement('input');
+        newInput.setAttribute('type', 'text');
+        newInput.setAttribute('name', 'insurances[]');
+        newInput.setAttribute('placeholder', 'Insurance Name');
+        document.querySelector('.insurance-list').appendChild(newInput);
+    });
+    document.getElementById('show-signup').addEventListener('click', function() {
+        document.getElementById('signin-form').style.display = 'none';
+        document.getElementById('signup-form').style.display = 'block';
+        // Hide the navbar
+        document.getElementById('navbar').style.display = 'none';
+    });
+    
+    document.getElementById('show-signin').addEventListener('click', function() {
+        document.getElementById('signup-form').style.display = 'none';
+        document.getElementById('signin-form').style.display = 'block';
+        // Show the navbar
+        document.getElementById('navbar').style.display = 'flex';  // assuming your navbar uses flexbox; adjust as needed
+    });
+</script>
 </body>
 
 </html>

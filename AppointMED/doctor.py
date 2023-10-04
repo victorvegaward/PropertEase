@@ -100,8 +100,10 @@ class Doctor:
         self.last_name = self.valid_last_name(last_name)
         self.specialties = self.valid_specialties(specialties)
         self.address = self.valid_address(address)
-        self.lat = self.valid_lat(lat)
-        self.lng = self.valid_lng(lng)
+        # self.lat = self.valid_lat(lat)
+        # self.lng = self.valid_lng(lng)
+        self.lat = lat
+        self.lng = lng
         self.medical_coverages = self.valid_medical_coverages(medical_coverages)
         self.phone_number = self.valid_phone_number(phone_number)
         self.photo_url = self.valid_photo_url(photo_url)
@@ -114,7 +116,7 @@ class Doctor:
         """
         doctor = Doctor(first_name, last_name, specialties, address, lat, lng, medical_coverages, phone_number, photo_url)
         doctor_document = doctor.to_json()
-        collection = database.db.doctors
+        collection = database.doctors
         print(doctor_document)
         collection.insert_one(doctor_document)
         return doctor
@@ -132,7 +134,7 @@ class Doctor:
         """ A static method, that filters doctors by the given input from the user
         """
 
-        collection = database.db.doctors
+        collection = database.doctors
         if not specialty and not name:
             return collection.find()
         elif not specialty:
@@ -224,8 +226,8 @@ class Doctor:
         for specialty in specialties:
             if type(specialty) != str:
                 raise TypeError("The doctor's specialty is not of type string")
-            if specialty not in self.curr_specialties:
-                raise ValueError(specialty +  " specialty is currently not supported")
+            # if specialty not in self.curr_specialties:
+            #     raise ValueError(specialty +  " specialty is currently not supported")
         return specialties
 
     def valid_address(self, address):
