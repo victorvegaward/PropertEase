@@ -268,5 +268,4 @@ input[type="radio"],
 label {
     display: inline-block;
     vertical-align: middle; /* Ensures vertical alignment */
-    font-size: small;
 }
