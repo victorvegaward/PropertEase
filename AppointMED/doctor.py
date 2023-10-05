@@ -116,7 +116,7 @@ class Doctor:
         """
         doctor = Doctor(first_name, last_name, specialties, address, lat, lng, medical_coverages, phone_number, photo_url)
         doctor_document = doctor.to_json()
-        collection = database.doctors
+        collection = database.db.doctors
         print(doctor_document)
         collection.insert_one(doctor_document)
         return doctor
