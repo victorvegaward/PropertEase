@@ -5,106 +5,132 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tailwind CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&family=Whisper&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="../static/css/style.css">
     <title>MedEasy - Sign In/Sign Up</title>
-
 </head>
-<body>
-    <div class="blocking">
-        <div class="navbar">
-            <img class="header-logo" src="../static/images/MedEasy.svg" alt="MedEasy logo">
-            <div class="navbar-elements">
-                <a class="nav-element border-transparent rounded-full hover:border-emerald-500" href="/home">Home</a>
-                <a class="nav-element border-transparent rounded-full hover:border-emerald-500" href="/about">About</a>
-            </div>
-        </div>
+<body class="bg-gray-100 h-screen">
+
+<div class="container mx-auto px-4 h-full">
+    <!-- Navbar -->
+    <div class="navbar mb-10">
+        <a href="/">
+        <img class="mx-auto my-8 w-32" src="../static/images/MedEasy.svg" alt="MedEasy logo">
+    </a>
     </div>
-    <div class="auth-container">
-        <!-- Sign In Form -->
-        <div class="auth-form" id="signin-form">
-            <h2 class="center">Sign In</h2>
-            <form method="post" action="/signin">
-                <div class="input-group">
-                    <label for="signin-email">Email:</label>
-                    <input type="email" id="signin-email" name="email" required>
+
+    <!-- Forms Container -->
+    <div class="flex justify-center">
+        <div class="bg-white w-full max-w-md rounded-lg shadow-md p-8">
+
+            <!-- Sign In Form -->
+            <div id="signin-form">
+                <h2 class="font-semibold text-xl mb-6 text-center">Sign In</h2>
+
+                <form method="post" action="/signin" class="space-y-6">
+                    <div>
+                        <label for="signin-email" class="block mb-2 font-medium">Email:</label>
+                        <input type="email" id="signin-email" name="email" required class="w-full p-2 border rounded">
+                    </div>
+
+                    <div>
+                        <label for="signin-password" class="block mb-2 font-medium">Password:</label>
+                        <input type="password" id="signin-password" name="password" required class="w-full p-2 border rounded">
+                    </div>
+
+                    <div>
+                        <input class="cursor-pointer w-full bg-blue-500 text-white p-2 rounded" type="submit" value="Sign In">
+                    </div>
+                </form>
+
+                <div class="text-center mt-4">
+                    <span>Don't have an account? </span>
+                    <a href="#" id="show-signup" class="text-blue-500 hover:underline cursor-pointer">Sign Up</a>
                 </div>
-
-                <div class="input-group">
-                    <label for="signin-password">Password:</label>
-                    <input type="password" id="signin-password" name="password" required>
-                </div>
-
-                <div class="submit-button center">
-                    <input class="cursor-pointer" type="submit" value="Sign In">
-                </div>
-            </form>
-
-            <p class="center">Don't have an account? <a href="#" id="show-signup">Sign Up</a></p>
-        </div>
-
-        <div class="auth-form" id="signup-form">
-            <h2 class="center">Sign Up</h2>
-            
-            <!-- Account Type Selection -->
-            <div class="input-group">
-                <label>Account Type:</label>
-                <input type="radio" id="patient" name="accountType" value="patient" checked>
-                <label for="patient">Patient</label>
-                <input type="radio" id="administrator" name="accountType" value="administrator">
-                <label for="administrator">Hospital Administrator</label>
             </div>
 
-            <!-- Common Fields -->
-            <form method="post" action="/signup">
-                <div class="input-group">
-                    <label for="signup-email">Email:</label>
-                    <input type="email" id="signup-email" name="email" required>
+            <!-- Sign Up Form -->
+            <div id="signup-form" style="display: none;">
+                <h2 class="font-semibold text-xl mb-6 text-center">Sign Up</h2>
+                <!-- Account Type Selection -->
+                <div class="mb-6">
+                    <span class="font-medium block mb-2">Account Type:</span>
+                    <button id="patient-btn" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mr-4" data-account-type="patient">Patient</button>
+                    <button id="doctor-btn" class="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400" data-account-type="administrator">Doctor</button>
+                    <input type="hidden" id="accountType" name="accountType" value="patient">
                 </div>
 
-                <div class="input-group">
-                    <label for="signup-password">Password:</label>
-                    <input type="password" id="signup-password" name="password" required>
-                </div>
-            <div class="admin-signup">
-                <!-- Administrator Fields (Initially hidden) -->
-                <div id="administrator-fields" style="display:none;">
-                    <div class="input-group">
-                        <label for="first_name">First Name:</label>
-                        <input type="text" id="first_name" name="first_name" required>
+                <!-- Form Fields -->
+                <form method="post" action="/signup" class="space-y-6" enctype="multipart/form-data">
+
+                    <!-- Common Fields -->
+                    <div>
+                        <label for="signup-email" class="block mb-2 font-medium">Email:</label>
+                        <input type="email" id="signup-email" name="email" required class="w-full p-2 border rounded">
                     </div>
-                
-                    <div class="input-group">
-                        <label for="last_name">Last Name:</label>
-                        <input type="text" id="last_name" name="last_name" required>
+
+                    <div>
+                        <label for="signup-password" class="block mb-2 font-medium">Password:</label>
+                        <input type="password" id="signup-password" name="password" required class="w-full p-2 border rounded">
                     </div>
-                
-                    <select name="specialties" multiple>
-                        <option value="Cardiologist">Cardiologist</option>
-                        <option value="Dermatologist">Dermatologist</option>
-                        <option value="Allergist">Allergist</option>
-                        <option value="General Practitioner">General</option>
-                        <option value="Pediatrician">Pediatrician</option>
-                        <option value="Orthopedist">Orthopedist</option>
-                        <option value="Ophtalmologist">Ophtalmologist</option>
-                        <option value="Radiologist">Radiologist</option>
-                        <!-- other options -->
-                    </select>
-                      
-                
-                    <div class="input-group">
-                        <label for="address">Address:</label>
-                        <input type="text" id="address" name="address" required>
-                    </div>
-                
-                    <select name="medical_coverages" multiple>
-                        <option value="Triple S">Triple S</option>
-                        <option value="First Medical">First Medical</option>
-                        <option value="Humana">Humana</option>
-                        <!-- other options -->
-                    </select>
+
+                     <div class="admin-signup">
+                        <!-- Administrator Fields (Initially hidden) -->
+                        <div id="administrator-fields" style="display:none;">
+                            <div class="input-group">
+                                <label for="first_name">First Name:</label>
+                                <input type="text" id="first_name" name="first_name" required>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="last_name">Last Name:</label>
+                                <input type="text" id="last_name" name="last_name" required>
+                            </div>
+                             <!-- Specialties Dropdown -->
+                            <div class="dropdown mb-4 relative">
+                                <label for="specialties" class="block mb-2 font-medium">Specialties:</label>
+                                <button class="w-full bg-gray-200 text-left px-4 py-2 rounded border focus:outline-none focus:ring" id="dropdownButtonSpecialties">
+                                    Select Specialties
+                                    <span class="material-icons absolute right-3 top transform -translate-y">keyboard_arrow_down</span>
+                                </button>
+                                <div class="dropdown-menu-specialties absolute w-full mt-2 hidden border rounded bg-white shadow-md z-10">
+                                    <!-- ... Specialty checkbox options ... -->
+                                    <label class="block px-4 py-2 hover:bg-gray-100 cursor-pointer"><input type="checkbox" value="Cardiologist" class="mr-2"> Cardiologist</label>
+                                    <label class="block px-4 py-2 hover:bg-gray-100 cursor-pointer"><input type="checkbox" value="Dermatologist" class="mr-2"> Dermatologist</label>
+                                    <label class="block px-4 py-2 hover:bg-gray-100 cursor-pointer"><input type="checkbox" value="Allergist" class="mr-2"> Allergist</label>
+                                    <label class="block px-4 py-2 hover:bg-gray-100 cursor-pointer"><input type="checkbox" value="General Practitioner" class="mr-2"> Generalist</label>
+                                    <label class="block px-4 py-2 hover:bg-gray-100 cursor-pointer"><input type="checkbox" value="Pediatrician" class="mr-2"> Pediatrician</label>
+                                    <label class="block px-4 py-2 hover:bg-gray-100 cursor-pointer"><input type="checkbox" value="Orthopedist" class="mr-2"> Orthopedist</label>
+                                    <label class="block px-4 py-2 hover:bg-gray-100 cursor-pointer"><input type="checkbox" value="Ophtalmologist" class="mr-2"> Ophtalmologist</label>
+                                    <label class="block px-4 py-2 hover:bg-gray-100 cursor-pointer"><input type="checkbox" value="Radiologist" class="mr-2"> Radiologist</label>
+                                         <!-- ... other options ... -->
+                                </div>
+                            </div>
+                                    
+                            <div class="input-group">
+                                <label for="address">Address:</label>
+                                <input type="text" id="address" name="address" required>
+                            </div>
+
+
+                            <div class="dropdown mb-4 relative">
+                                <label for="medical_coverages" class="block mb-2 font-medium">Medical Coverages:</label>
+                                <button class="w-full bg-gray-200 text-left px-4 py-2 rounded border focus:outline-none focus:ring" id="dropdownButtonCoverages">
+                                    Select Coverages
+                                    <span class="material-icons absolute right-3 top transform -translate-y">keyboard_arrow_down</span>
+                                </button>
+                                <div class="dropdown-menu-coverages absolute w-full mt-2 hidden border rounded bg-white shadow-md z-10">
+                                    <!-- ... Coverage checkbox options ... -->
+                                    <label class="block px-4 py-2 hover:bg-gray-100 cursor-pointer"><input type="checkbox" value="Triple S" class="mr-2"> Triple S</label>
+                                    <label class="block px-4 py-2 hover:bg-gray-100 cursor-pointer"><input type="checkbox" value="First Medical" class="mr-2"> First Medical</label>
+                                    <label class="block px-4 py-2 hover:bg-gray-100 cursor-pointer"><input type="checkbox" value="Humana" class="mr-2"> Humana</label>
+                                    <label class="block px-4 py-2 hover:bg-gray-100 cursor-pointer"><input type="checkbox" value="MCS" class="mr-2"> MCS</label>
+                                    <!-- ... other options ... -->
+                                </div>
+                            </div>
                 
                     <div class="input-group">
                         <label for="phone_number">Phone Number:</label>
@@ -112,42 +138,170 @@
                     </div>
                 
                     <div class="input-group">
-                        <label for="photo_url">Photo URL:</label>
-                        <input type="url" id="photo_url" name="photo_url">
+                        <label for="photo">Insert Photo:</label>
+                        <input type="file" id="photo" name="photo" accept="image/*">
+                        <img id="photo-preview" src="#" alt="Image Preview" style="display:none; max-width: 200px; margin-top: 10px;">
                     </div>
+
+
                 
                 </div>
             </div>
-                <div class="submit-button center">
-                    <input class="cursor-pointer" type="submit" value="Sign Up">
+
+                    <div>
+                        <input class="cursor-pointer w-full bg-blue-500 text-white p-2 rounded" type="submit" value="Sign Up">
+                    </div>
+                </form>
+
+                <div class="text-center mt-4">
+                    <span>Already have an account? </span>
+                    <a href="#" id="show-signin" class="text-blue-500 hover:underline cursor-pointer">Sign In</a>
                 </div>
-            </form>
-            
-            <p class="center">Already have an account? <a href="#" id="show-signin">Sign In</a></p>
+            </div>
+
         </div>
     </div>
 
-    <script src="../static/js/script.js"></script>
+</div>
+
+<script src="../static/js/script.js"></script>
     <script>
-        document.getElementById('show-signup').addEventListener('click', function() {
-            document.getElementById('signin-form').style.display = 'none';
-            document.getElementById('signup-form').style.display = 'block';
+        document.addEventListener('DOMContentLoaded', function() {
+
+    // Toggle between Sign In and Sign Up forms
+    document.getElementById('show-signup').addEventListener('click', function() {
+        document.getElementById('signin-form').style.display = 'none';
+        document.getElementById('signup-form').style.display = 'block';
+    });
+
+    document.getElementById('show-signin').addEventListener('click', function() {
+        document.getElementById('signup-form').style.display = 'none';
+        document.getElementById('signin-form').style.display = 'block';
+    });
+
+    // Show Administrator fields based on account type selection (for radio buttons)
+    document.querySelectorAll('input[name="accountType"]').forEach(function(radio) {
+        radio.addEventListener('change', function() {
+            const adminFields = document.getElementById('administrator-fields');
+            if (this.value === 'administrator') {
+                adminFields.style.display = 'block';
+            } else {
+                adminFields.style.display = 'none';
+            }
+        });
+    });
+
+    // Account type switching using buttons
+    document.getElementById('patient-btn').addEventListener('click', function() {
+        this.classList.remove('bg-gray-300', 'text-black', 'hover:bg-gray-400');
+        this.classList.add('bg-blue-500', 'text-white', 'hover:bg-blue-600');
+
+        const doctorBtn = document.getElementById('doctor-btn');
+        doctorBtn.classList.remove('bg-blue-500', 'text-white', 'hover:bg-blue-600');
+        doctorBtn.classList.add('bg-gray-300', 'text-black', 'hover:bg-gray-400');
+
+        document.getElementById('accountType').value = this.getAttribute('data-account-type');
+        const adminFields = document.getElementById('administrator-fields');
+        adminFields.style.display = 'none';
+    });
+
+    document.getElementById('doctor-btn').addEventListener('click', function() {
+        this.classList.remove('bg-gray-300', 'text-black', 'hover:bg-gray-400');
+        this.classList.add('bg-blue-500', 'text-white', 'hover:bg-blue-600');
+
+        const patientBtn = document.getElementById('patient-btn');
+        patientBtn.classList.remove('bg-blue-500', 'text-white', 'hover:bg-blue-600');
+        patientBtn.classList.add('bg-gray-300', 'text-black', 'hover:bg-gray-400');
+
+        document.getElementById('accountType').value = this.getAttribute('data-account-type');
+        const adminFields = document.getElementById('administrator-fields');
+        adminFields.style.display = 'block';
+    });
+
+    // Dropdown functionality for Specialties
+        document.getElementById('dropdownButtonSpecialties').addEventListener('click', function() {
+            const menu = document.querySelector('.dropdown-menu-specialties');
+            const arrowIcon = this.querySelector('.material-icons');
+            
+            menu.classList.toggle('hidden');
+            
+            // Toggle arrow direction
+            if (menu.classList.contains('hidden')) {
+                arrowIcon.textContent = 'keyboard_arrow_down';
+            } else {
+                arrowIcon.textContent = 'keyboard_arrow_up';
+            }
         });
 
-        document.getElementById('show-signin').addEventListener('click', function() {
-            document.getElementById('signup-form').style.display = 'none';
-            document.getElementById('signin-form').style.display = 'block';
-        });
-        document.querySelectorAll('input[name="accountType"]').forEach(function(radio) {
-            radio.addEventListener('change', function() {
-                const adminFields = document.getElementById('administrator-fields');
-                if (this.value === 'administrator') {
-                    adminFields.style.display = 'block';
-                } else {
-                    adminFields.style.display = 'none';
-                }
+        // Show selected items for Specialties
+        document.querySelectorAll('.dropdown-menu-specialties input[type="checkbox"]').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                let selectedItems = [];
+                document.querySelectorAll('.dropdown-menu-specialties input[type="checkbox"]:checked').forEach(function(checkedBox) {
+                    selectedItems.push(checkedBox.value);
+                });
+                const buttonText = selectedItems.length > 0 ? selectedItems.join(', ') : 'Select Specialties';
+                document.getElementById('dropdownButtonSpecialties').firstChild.nodeValue = buttonText + " ";
             });
         });
+
+        // Dropdown functionality for Medical Coverages
+        document.getElementById('dropdownButtonCoverages').addEventListener('click', function() {
+            const menu = document.querySelector('.dropdown-menu-coverages');
+            const arrowIcon = this.querySelector('.material-icons');
+            
+            menu.classList.toggle('hidden');
+            
+            // Toggle arrow direction
+            if (menu.classList.contains('hidden')) {
+                arrowIcon.textContent = 'keyboard_arrow_down';
+            } else {
+                arrowIcon.textContent = 'keyboard_arrow_up';
+            }
+        });
+
+        // Show selected items for Medical Coverages
+        document.querySelectorAll('.dropdown-menu-coverages input[type="checkbox"]').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                let selectedItems = [];
+                document.querySelectorAll('.dropdown-menu-coverages input[type="checkbox"]:checked').forEach(function(checkedBox) {
+                    selectedItems.push(checkedBox.value);
+                });
+                const buttonText = selectedItems.length > 0 ? selectedItems.join(', ') : 'Select Coverages';
+                document.getElementById('dropdownButtonCoverages').firstChild.nodeValue = buttonText + " ";
+            });
+        });
+
+        document.getElementById('photo').addEventListener('change', function() {
+            const file = this.files[0];
+            const reader = new FileReader();
+            
+            if (file.size > maxSize) {
+                alert('File size should be less than 5MB.');
+                this.value = '';  // Clear the input
+                return;
+            }
+            
+            if (!file.type.match('image.*')) {
+                alert('Please select a valid image.');
+                this.value = '';  // Clear the input
+                return;
+            }
+
+            reader.onloadend = function() {
+                document.getElementById('photo-preview').src = reader.result;
+                document.getElementById('photo-preview').style.display = 'block';
+            }
+            
+            if (file) {
+                reader.readAsDataURL(file);
+            } else {
+                document.getElementById('photo-preview').style.display = 'none';
+            }
+        });
+
+
+    // Function to add new fields
     function addField(containerId, fieldName) {
         var container = document.getElementById(containerId);
         var input = document.createElement('input');
@@ -155,28 +309,29 @@
         input.name = fieldName;
         container.appendChild(input);
     }
+
+    // Listener to add insurance field
     document.getElementById('add-insurance').addEventListener('click', function(e) {
-        e.preventDefault(); // prevent default button action
+        e.preventDefault();
         const newInput = document.createElement('input');
         newInput.setAttribute('type', 'text');
         newInput.setAttribute('name', 'insurances[]');
         newInput.setAttribute('placeholder', 'Insurance Name');
         document.querySelector('.insurance-list').appendChild(newInput);
     });
+
+    // Hide/Show navbar when toggling between Sign Up and Sign In
     document.getElementById('show-signup').addEventListener('click', function() {
-        document.getElementById('signin-form').style.display = 'none';
-        document.getElementById('signup-form').style.display = 'block';
-        // Hide the navbar
         document.getElementById('navbar').style.display = 'none';
     });
     
     document.getElementById('show-signin').addEventListener('click', function() {
-        document.getElementById('signup-form').style.display = 'none';
-        document.getElementById('signin-form').style.display = 'block';
-        // Show the navbar
-        document.getElementById('navbar').style.display = 'flex';  // assuming your navbar uses flexbox; adjust as needed
+        document.getElementById('navbar').style.display = 'flex';
     });
+});
+
 </script>
+
 </body>
 
 </html>

@@ -1,81 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&family=Whisper&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="../static/css/style.css">
-    
-    <title>MedEasy</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&family=Whisper&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../static/css/style.css" />
 
-</head>
-<body>
+    <title>MedEasy</title>
+  </head>
+  <body>
     <div class="navbar">
-        <img class="header-logo" src="../static/images/MedEasy.svg" alt="MedEasy logo">
-        <div class="navbar-elements">
-            <a class="nav-element border-transparent rounded-full hover:border-emerald-500" href="/home">Home</a>
-            <a class="nav-element border-transparent rounded-full hover:border-emerald-500" href="/about">About</a>
+      <img
+        class="header-logo"
+        src="../static/images/MedEasy.svg"
+        alt="MedEasy logo"
+      />
+      <div class="navbar-elements">
+        <a
+          class="nav-element border-transparent rounded-full hover:border-emerald-500"
+          href="/home"
+          >Home</a
+        >
+        <a
+          class="nav-element border-transparent rounded-full hover:border-emerald-500"
+          href="/about"
+          >About</a
+        >
+
+        <!-- Sign-In/Sign-Up Tab -->
+        {% if 'user_id' not in session %}
+        <a
+          class="nav-element border-transparent rounded-full hover:border-emerald-500"
+          href="/signin"
+          >Sign In/Sign Up</a
+        >
+        {% endif %}
+
+        <!-- Round Profile Tab and Sign-Out option (visible only when logged in) -->
+        {% if 'user_id' in session %}
+        <div class="nav-element-profile">
+          <img
+            class="rounded-full h-10 w-10"
+            src="../static/images/path_to_profile_image.jpg"
+            href="/profile"
+            alt="Profile"
+          />
+          <!-- You can replace the path with a dynamic path if you store profile images for users. -->
         </div>
+        <!-- Sign Out Link -->
+        <a
+          class="nav-element border-transparent rounded-full hover:border-emerald-500"
+          href="/signout"
+          >Sign Out</a
+        >
+        {% endif %}
+      </div>
     </div>
     <div id="main" class="flex">
-        <form id="search"  method="post" action="/home">
-            <div id="search-input">
-                <div id="doctor-name">
-                    <span class="material-icons material-icons-outlined"> search</span>
-                    <input class="style:none" placeholder="Search Doctor..." type="search" name="doctor-name" id="doctor-name">
-                </div>
-         
-                <select name="doctor-specialty" id="doctor-specialty">
-                    <option value="">All</option>
-                    <option value="dermatologist">Dermatologist</option>
-                    <option value="allergist">Allergist</option>
-                    <option value="cardiologist">Cardiologist</option>
-                    <option value="gastroenterologist">Gastroenterologist</option>
-                </select>
-            </div>
-            <div id="doctors">
-                {% for doctor in doctors %}
-                <a href="/Schedule/{{doctor['doc_id']}}">
-                <div class="doctor cursor-pointer border-gray-300" data-geo="{{ doctor['lat'] }},{{ doctor['lng'] }}">
-                    <div class="doctor-photo-wrapper">
-                      <span class="doctor-photo material-icons material-symbols-outlined">
-                        account_circle_full
-                    </span>  
-                    </div>  
-                    <div class="doctor-name">
-                        <p style="font-weight: bolder;">Dr. {{ doctor['first_name'] }} {{ doctor['last_name'] }}</p>
-                        <div class="review">
-                           <span class="star material-icons material-symbols-outlined">star</span>
-                            <span class="star material-icons material-symbols-outlined">star</span>
-                            <span class="star material-icons material-symbols-outlined">star</span>
-                            <span class="star material-icons material-symbols-outlined">star</span>
-                            <span class="star material-icons material-symbols-outlined">star</span> 
-                        </div>      
-                    </div>
-                    <div class="doctor-specialty">
-                        {% for specialty in doctor['specialties'] %}
-                            {{ specialty }}
-                        {% endfor %}
-                    </div>
-                </div>
-                </a>
-                {% endfor %}
+      <form id="search" method="post" action="/home">
+        <div id="search-input">
+          <div id="doctor-name">
+            <span class="material-icons material-icons-outlined"> search</span>
+            <input
+              class="style:none"
+              placeholder="Search Doctor..."
+              type="search"
+              name="doctor-name"
+              id="doctor-name"
+            />
+          </div>
 
+          <select name="doctor-specialty" id="doctor-specialty">
+            <option value="">All</option>
+            <option value="dermatologist">Dermatologist</option>
+            <option value="allergist">Allergist</option>
+            <option value="cardiologist">Cardiologist</option>
+            <option value="gastroenterologist">Gastroenterologist</option>
+          </select>
+        </div>
+        <div id="doctors">
+          {% for doctor in doctors %}
+          <a href="/Schedule/{{doctor['doc_id']}}">
+            <div
+              class="doctor cursor-pointer border-gray-300"
+              data-geo="{{ doctor['lat'] }},{{ doctor['lng'] }}"
+            >
+              <div class="doctor-photo-wrapper">
+                <span
+                  class="doctor-photo material-icons material-symbols-outlined"
+                >
+                  account_circle_full
+                </span>
+              </div>
+              <div class="doctor-name">
+                <p style="font-weight: bolder">
+                  Dr. {{ doctor['first_name'] }} {{ doctor['last_name'] }}
+                </p>
+                <div class="review">
+                  <span class="star material-icons material-symbols-outlined"
+                    >star</span
+                  >
+                  <span class="star material-icons material-symbols-outlined"
+                    >star</span
+                  >
+                  <span class="star material-icons material-symbols-outlined"
+                    >star</span
+                  >
+                  <span class="star material-icons material-symbols-outlined"
+                    >star</span
+                  >
+                  <span class="star material-icons material-symbols-outlined"
+                    >star</span
+                  >
+                </div>
+              </div>
+              <div class="doctor-specialty">
+                {% for specialty in doctor['specialties'] %} {{ specialty }} {%
+                endfor %}
+              </div>
             </div>
-            <div class="rounded-full" id="submit">
-                <input class="cursor-pointer" type="submit" value="Search">
-            </div>
-        </form>
-        <script src="../static/js/script.js"></script>
-        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsJY7KojcXDneWqXV1h0J891NbgFrdglE&map_ids=122517338e1e4a8&callback=initMap"></script>
-        <div id="map-view"> 
-            <div id="map"></div>
-        </div>  
+          </a>
+          {% endfor %}
+        </div>
+        <div class="rounded-full" id="submit">
+          <input class="cursor-pointer" type="submit" value="Search" />
+        </div>
+      </form>
+      <script src="../static/js/script.js"></script>
+      <script
+        async
+        defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsJY7KojcXDneWqXV1h0J891NbgFrdglE&map_ids=122517338e1e4a8&callback=initMap"
+      ></script>
+      <div id="map-view">
+        <div id="map"></div>
+      </div>
     </div>
-    
-    
-</body>
+  </body>
 </html>

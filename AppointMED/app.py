@@ -188,7 +188,21 @@ def signup():
         session['user_id'] = user.username
         flash('Account created!', 'success')
         return redirect(url_for('home'))
-    return render_template('signup.html')  # Assuming you have a separate 'signup.html'
+    return render_template('signup.html')  
+
+
+@app.route('/signout')
+def signout():
+    """Handle user sign-out."""
+    # Clear user's session
+    session.clear()
+
+    # Notify user they have been logged out
+    flash('You have been logged out successfully!', 'success')
+
+    # Redirect to home page
+    return redirect(url_for('home'))
+
 
 def hash_password(password: str) -> str:
     """Hash a password using PBKDF2 and return the hexdigest."""
