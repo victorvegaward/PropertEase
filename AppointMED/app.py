@@ -13,7 +13,6 @@ import hashlib
 import binascii
 
 
-
 # -- Initialization section --
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "MedEasy"
@@ -168,7 +167,7 @@ def signin():
         else:
             print("incorrect")
             flash('Login unsuccessful. Check email and password', 'danger')
-    return render_template('Login.html')  # Assuming your HTML is named 'login.html'
+    return render_template('login.html') 
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
