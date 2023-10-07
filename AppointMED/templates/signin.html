@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Tailwind CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&family=Whisper&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/style.css">
+    <title>MedEasy - Sign In</title>
+</head>
+
+<body class="bg-gray-100 h-screen">
+
+    <div class="container mx-auto px-4 h-full">
+
+        <!-- Navbar -->
+        <div class="navbar mb-10">
+            <a href="/">
+                <img class="mx-auto my-8 w-32" src="../static/images/MedEasy.svg" alt="MedEasy logo">
+            </a>
+        </div>
+
+        <!-- Sign In Form Container -->
+        <div class="flex justify-center">
+            <div class="bg-white w-full max-w-md rounded-lg shadow-md p-8">
+
+                <!-- Sign In Form -->
+                <div id="signin-form">
+                    <h2 class="font-semibold text-xl mb-6 text-center">Sign In</h2>
+
+                    <form method="post" action="/signin" class="space-y-6">
+                        <div>
+                            <label for="signin-email" class="block mb-2 font-medium">Email:</label>
+                            <input type="email" id="signin-email" name="email" required class="w-full p-2 border rounded">
+                        </div>
+
+                        <div class="relative">
+                            <label for="signin-password" class="block mb-2 font-medium">Password:</label>
+                            <input type="password" id="signin-password" name="password" required class="w-full p-2 border rounded">
+                            <span toggle="#signin-password" class="material-icons toggle-password absolute top-1/2 right-3 cursor-pointer">visibility_off</span>
+                        </div>
+
+                        <div>
+                            <input class="cursor-pointer w-full bg-blue-500 text-white p-2 rounded" type="submit" value="Sign In">
+                        </div>
+                    </form>
+
+                    <div class="text-center mt-4">
+                        <span>Don't have an account? </span>
+                        <a href="/signup" class="text-blue-500 hover:underline">Sign Up</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+         // Toggle visibility of password
+    document.querySelector('.toggle-password').addEventListener('click', function(e) {
+        // Get the icon and the input elements
+        let icon = e.currentTarget;
+        let input = document.querySelector(icon.getAttribute('toggle'));
+
+        // Check the type of the input (password or text)
+        if (input.type === "password") {
+            input.type = "text";
+            icon.textContent = 'visibility'; // Change the icon to 'visibility'
+        } else {
+            input.type = "password";
+            icon.textContent = 'visibility_off'; // Change the icon to 'visibility_off'
+        }
+    });
+    </script>
+</body>
+</html>

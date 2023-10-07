@@ -1,56 +1,47 @@
-from pymongo import MongoClient
 from werkzeug.security import generate_password_hash, check_password_hash
-import bcrypt
 
 class User:
-    def __init__(self, username, email, password):
-        self.username = username
+    def __init__(self, user_id, email, password, role, payload):
+        self.user_id = user_id
         self.email = email
         self.password = password
-        
+        self.role = role
+        self.payload = payload
+
     def to_json(self):
-        """
-        Convert the User object to JSON format for database storage.
-        """
         return {
-            "username": self.username,
+            "user_id": self.user_id,
             "email": self.email,
-            "password": self.password
+            "password": self.password,
+            "role": self.role,
+            "payload": self.payload
         }
 
     @staticmethod
-    def create_user(username, email, password, database):
-        """
-        Create a new User object and store it in the MongoDB database.
-        """
-        user = User(username, email, password)
+    def create_user(email, password, role, payload, database):
+        # Generate unique user_id here
+        user_id_prefix = "DOC_" if role == "doctor" else "PAT_"
+        # Fetch the last created user's ID and increment the number
+        last_user = list(database["users"].find().sort("_id", -1).limit(1))
+        last_id = 0 if not last_user else int(
+            last_user[0]["user_id"].split('_')[1])
+        user_id = user_id_prefix + str(last_id + 1).zfill(3)
+
+        hashed_password = generate_password_hash(password)
+        user = User(user_id, email, hashed_password, role, payload)
         user_document = user.to_json()
-        collection = database.users
+        collection = database["users"]
         collection.insert_one(user_document)
         return user
 
     @staticmethod
     def get_user_by_email(email, database):
-        """
-        Fetch a user from the MongoDB database by their email.
-        """
-        collection = database.db.users
+        collection = database["users"]
         user_document = collection.find_one({"email": email})
-        
+
         if user_document:
-            return User(user_document["username"], user_document["email"], user_document["password"])
-        return None
+            return User(user_document["email"], user_document["password"], user_document["role"], user_document["payload"])
 
     @staticmethod
-    def validate_login(stored_password, given_password):
-        """
-        Validate the password provided during login.
-        """
+    def check_password(stored_password, given_password):
         return check_password_hash(stored_password, given_password)
-
-    @staticmethod
-    def check_password(user_password: str, password_to_check: str) -> bool:
-        """
-        Check if the provided password matches the hashed password stored for this user.
-        """
-        return check_password_hash(user_password, password_to_check)

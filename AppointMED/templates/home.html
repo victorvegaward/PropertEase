@@ -48,21 +48,20 @@
         <!-- Round Profile Tab and Sign-Out option (visible only when logged in) -->
         {% if 'user_id' in session %}
         <div class="nav-element-profile">
-          <img
-            class="rounded-full h-10 w-10"
-            src="../static/images/path_to_profile_image.jpg"
-            href="/profile"
-            alt="Profile"
-          />
-          <!-- You can replace the path with a dynamic path if you store profile images for users. -->
+            <img
+                class="rounded-full h-10 w-10"
+                src="{{ session['image_path'] or '../static/images/generic-user-pfp.png' }}"
+                alt="Profile"
+            />
+            <div class="profile-dropdown" id="profileDropdown">
+                <!-- Go to User Profile Link -->
+                <a href="/profile">Profile</a>
+                <!-- Sign Out Link -->
+                <a href="/signout">Sign Out</a>
+            </div>
         </div>
-        <!-- Sign Out Link -->
-        <a
-          class="nav-element border-transparent rounded-full hover:border-emerald-500"
-          href="/signout"
-          >Sign Out</a
-        >
         {% endif %}
+
       </div>
     </div>
     <div id="main" class="flex">
@@ -141,6 +140,15 @@
         defer
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsJY7KojcXDneWqXV1h0J891NbgFrdglE&map_ids=122517338e1e4a8&callback=initMap"
       ></script>
+
+      <script>
+      document.querySelector('.nav-element-profile').addEventListener('click',function() {
+          const dropdown = document.getElementById('profileDropdown');
+          dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+          event.stopPropagation();
+          });
+      </script>
+
       <div id="map-view">
         <div id="map"></div>
       </div>

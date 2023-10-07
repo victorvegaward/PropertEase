@@ -1,0 +1,41 @@
+<div class="doctor-profile">
+    <!-- Profile Picture -->
+    <img src="{{ doctor.image_path }}" alt="Doctor's profile picture" class="doctor-image">
+
+    <!-- Doctor's Name and Specialty -->
+    <h2>Dr. {{ doctor.first_name }} {{ doctor.last_name }} - {{ doctor.specialty }}</h2>
+
+    <!-- Location and Map -->
+    <p>Location: {{ doctor.location }}</p>
+    <!-- Here, you'd embed your map based on the doctor's location -->
+
+    <!-- Phone Number -->
+    <p>Phone: {{ doctor.phone }}</p>
+
+    <!-- Modify Profile Button -->
+    <button onclick="modifyProfileFunction()">Modify Profile</button>
+
+    <!-- Calendar -->
+    <!-- The calendar would likely use some kind of plugin or integration, so I'll just leave a placeholder -->
+    <div id="calendar"></div>
+
+    <!-- Services -->
+    <h3>Services Offered</h3>
+    <ul>
+        {% for service in doctor.services %}
+        <li>{{ service.name }} - {{ service.duration }}</li>
+        {% endfor %}
+    </ul>
+
+    <!-- Medical Plans -->
+    <h3>Medical Plans Accepted</h3>
+    <ul>
+        {% for plan in doctor.medical_plans %}
+        <li>{{ plan }}</li>
+        {% endfor %}
+    </ul>
+
+    <!-- Ratings and Reviews -->
+    <h3>Ratings and Reviews</h3>
+    <!-- Here, you'd integrate your ratings and reviews section. I'm leaving it as a placeholder for now. -->
+</div>

@@ -1,0 +1,27 @@
+<div class="patient-profile">
+    <h2>Profile</h2>
+    <p>Name: <span>{{ user.first_name }} {{ user.last_name }}</span></p>
+    <p>Email: <span>{{ user.email }}</span></p>
+
+    <h3>Appointments</h3>
+    <table class="appointments-table">
+        <thead>
+            <tr>
+                <th>Date and Time</th>
+                <th>Doctor</th>
+                <th>Location</th>
+                <th>Phone</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for appointment in user.appointments %}
+            <tr>
+                <td>{{ appointment.date }} at {{ appointment.time }}</td>
+                <td>Dr. {{ appointment.doctor_name }}</td>
+                <td>{{ appointment.location }}</td>
+                <td>{{ appointment.phone }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
