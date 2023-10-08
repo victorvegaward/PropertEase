@@ -1,4 +1,5 @@
-from werkzeug.security import generate_password_hash, check_password_hash
+from flask_bcrypt import Bcrypt
+
 
 class User:
     def __init__(self, user_id, email, password, role, payload):
@@ -18,7 +19,7 @@ class User:
         }
 
     @staticmethod
-    def create_user(email, password, role, payload, database):
+    def create_user(bcrypt, email, password, role, payload, database):
         # Generate unique user_id here
         user_id_prefix = "DOC_" if role == "doctor" else "PAT_"
         # Fetch the last created user's ID and increment the number
@@ -27,21 +28,23 @@ class User:
             last_user[0]["user_id"].split('_')[1])
         user_id = user_id_prefix + str(last_id + 1).zfill(3)
 
-        hashed_password = generate_password_hash(password)
+        hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
         user = User(user_id, email, hashed_password, role, payload)
         user_document = user.to_json()
-        collection = database["users"]
+        collection = database.db["users"]
         collection.insert_one(user_document)
         return user
 
     @staticmethod
     def get_user_by_email(email, database):
-        collection = database["users"]
+        collection = database.db["users"]
         user_document = collection.find_one({"email": email})
 
         if user_document:
-            return User(user_document["email"], user_document["password"], user_document["role"], user_document["payload"])
+            return User(user_document["user_id"], user_document["email"], user_document["password"], user_document["role"], user_document["payload"])
+        else:
+            return None
 
     @staticmethod
-    def check_password(stored_password, given_password):
-        return check_password_hash(stored_password, given_password)
+    def check_password(bcrypt, stored_password, given_password):
+        return bcrypt.check_password_hash(stored_password, given_password)

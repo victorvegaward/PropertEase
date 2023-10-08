@@ -33,6 +33,7 @@ time_slots = ["08:00am", "08:30am", "09:00am", "09:30am", "10:00am", "10:30am", 
 
 doctor_ids = {"Richard Silverstein": "1234"}
 
+
 @app.route("/", methods=["GET", "POST"])
 @app.route("/home", methods=["GET", "POST"])
 def home():
@@ -41,9 +42,11 @@ def home():
         doctors = mongo.db['doctors'].find()
     return render_template("home.html", doctors=doctors)
 
+
 @app.route("/about")
 def about():
     return render_template("about.html")
+
 
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
@@ -58,14 +61,16 @@ def profile():
             last_name = request.form.get('last_name', doctor.last_name)
             specialties = request.form.getlist('specialties')
             address = request.form.get('address', doctor.address)
-            phone_number = request.form.get('phone_number', doctor.phone_number)
+            phone_number = request.form.get(
+                'phone_number', doctor.phone_number)
             photo = request.files.get('photo')
             photo_url = doctor.photo_url
-            
+
             if photo:
                 file_path = os.path.join('static/images/pfp', photo.filename)
                 photo.save(file_path)
-                photo_url = url_for('static', filename='images/pfp/' + photo.filename)
+                photo_url = url_for(
+                    'static', filename='images/pfp/' + photo.filename)
 
             medical_coverages = request.form.getlist('medical_coverages')
             collection = mongo.db.doctors
@@ -84,33 +89,37 @@ def profile():
         return render_template('doctor.html', doctor=doctor)
 
     elif user_role == "patient":
-        
-        user = Patient.get_patient_by_email(session.get('email', ''), mongo)
-        
-        if request.method == 'POST':
-            first_name = request.form.get('first_name', patient.first_name)
-            last_name = request.form.get('last_name', patient.last_name)
-            phone_number = request.form.get(
-                'phone_number', user.phone_number)
 
-            collection = mongo.db.patients
-            
+        user = User.get_user_by_email(session.get('email', ''), mongo)
+
+        if request.method == 'POST':
+            first_name = request.form.get(
+                'first_name', user.payload['first_name'])
+            last_name = request.form.get(
+                'last_name', user.payload['last_name'])
+            phone_number = request.form.get(
+                'phone_number', user.payload['phone_number'])
+
+            # Modify this to update in the users collection
+            collection = mongo.db["users"]
+
             collection.update_one({"email": session.get('email', '')}, {
                 "$set": {
-                    "first_name": first_name,
-                    "last_name": last_name,
-                    "phone_number": phone_number
+                    "payload.first_name": first_name,
+                    "payload.last_name": last_name,
+                    "payload.phone_number": phone_number
                 }
             })
 
-            user = Patient.get_patient_by_email(
-                session.get('email', ''), mongo)
+            user = User.get_user_by_email(session.get('email', ''), mongo)
 
-        return render_template('patient.html', patient=patient)
+        # Use payload directly
+        return render_template('patient.html', patient=user.payload)
 
     else:
         flash('Invalid profile type.', 'danger')
         return redirect(url_for('home'))
+
 
 @app.route("/Schedule/<doc_id>", methods=["GET", "POST"])
 def schedule(doc_id):
@@ -153,6 +162,7 @@ def schedule(doc_id):
                                doctor_address=address,
                                doctor_phone=phone, medical_plans=medical_plans)
 
+
 @app.route("/<appt_id>")
 def confirmed_event(appt_id):
     event = Event.get_event(appt_id, mongo)
@@ -161,6 +171,7 @@ def confirmed_event(appt_id):
     appointment_id = event.get_appointment_id()
 
     return render_template("event.html", date=date, start_time=start_time, appointment_id=appointment_id)
+
 
 @app.route("/seed_db")
 def seed_db():
@@ -192,35 +203,59 @@ def seed_db():
 
     return "seeded successfully"
 
-@app.route('/signin', methods=['GET', 'POST'])
-def signin():
-    if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')
-        user = User.get_user_by_email(email, mongo)
-        if user and bcrypt.check_password_hash(user.password, password):
-            session['user_id'] = user.email
-            session['user_role'] = user.role
-            flash('Login successful!', 'success')
-            return redirect(url_for('home'))
-        else:
-            flash('Login unsuccessful. Check email and password', 'danger')
+
+@app.route('/signin', methods=['GET'])
+def signinGET():
     return render_template('signin.html')
 
+@app.route('/signin', methods=['POST'])
+def signinPOST():
+    email = request.form.get('email')
+    password = request.form.get('password')
+    user = mongo.db["db.users"].find_one({"email": email})
+    print(user)
+    print(password)
+    print(user.get('password'))
 
-@app.route('/signup', methods=['GET', 'POST'])
-def signup():
-    if request.method == 'POST':
-        account_type = request.form.get('accountType')
-        email = request.form.get('email')
-        password = request.form.get('password')
-        hashed_password = bcrypt.generate_password_hash(
-            password).decode('utf-8')
+    if user and User.check_password(bcrypt, user.get('password'), password):
+        session["user_id"] = user.get('user_id')
+        session['user_role'] = user.get('role')
+        flash('Login successful!', 'success')
+        return redirect(url_for('home'))
+    else:
+        flash('Login unsuccessful. Check email and password', 'danger')
+    return signinGET()
 
-        payload = {}
 
-        # Fields specific to the doctor role
-        if account_type == "doctor":
+@app.route('/signup', methods=['GET'])
+def signupGET():
+    return render_template('signup.html')
+    
+@app.route('/signup', methods=['POST'])
+def signupPOST():
+    account_type = request.form.get('accountType')
+    email = request.form.get('email')
+
+    # 1. Check if the email already exists in the database
+    existing_user = mongo.db["db.users"].find_one({"email": email})
+
+    if existing_user:
+    # 2. If the email exists, flash an error message
+        flash('An account with that email already exists!', 'danger')
+        return signupGET()
+
+    # Continue with the rest of the signup process if email is unique
+    password = request.form.get('password')
+
+    payload = {}
+
+    # Fields specific to the doctor role
+    if account_type == "patient":
+            payload["first_name"] = request.form.get('patient_first_name')
+            payload["last_name"] = request.form.get('patient_last_name')
+            payload["phone_number"] = request.form.get('patient_phone_number')
+
+    if account_type == "doctor":
             payload["first_name"] = request.form.get('first_name')
             payload["last_name"] = request.form.get('last_name')
             payload["specialties"] = request.form.getlist('specialties')
@@ -229,29 +264,20 @@ def signup():
                 'medical_coverages')
             payload["phone_number"] = request.form.get('phone_number')
             photo = request.files.get('photo')
-            if photo:
-                file_path = os.path.join('static/images/pfp', photo.filename)
-                photo.save(file_path)
-                payload["photo_url"] = url_for(
-                    'static', filename='images/pfp/' + photo.filename)
 
-        elif account_type == "patient":
-            payload["first_name"] = request.form.get('first_name')
-            payload["last_name"] = request.form.get('last_name')
-            payload["phone_number"] = request.form.get('phone_number')
+    if photo:
+        file_path = os.path.join('static/images/pfp', photo.filename)
+        photo.save(file_path)
+        payload["photo_url"] = url_for('static', filename='images/pfp/' + photo.filename)
 
-        # Create the user with the above payload
-        created_user = User.create_user(email=email, password=hashed_password,
+    # Create the user with the above payload
+    created_user = User.create_user(bcrypt, email=email, password=password,
                                         role=account_type, payload=payload, database=mongo.db)
 
-
-        session['user_id'] = created_user.user_id
-        session['user_role'] = account_type
-        flash('Account created!', 'success')
-        return redirect(url_for('home'))
-
-    return render_template('signup.html')
-
+    session['user_id'] = created_user.user_id
+    session['user_role'] = account_type
+    flash('Account created!', 'success')
+    return redirect(url_for('home'))
 
 
 @app.route('/signout')
@@ -260,10 +286,3 @@ def signout():
     flash('You have been logged out successfully!', 'success')
     return redirect(url_for('home'))
 
-
-def hash_password(password: str) -> str:
-    return bcrypt.generate_password_hash(password).decode('utf-8')
-
-
-def verify_password(stored_password: str, provided_password: str) -> bool:
-    return bcrypt.check_password_hash(stored_password, provided_password)

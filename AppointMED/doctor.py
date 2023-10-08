@@ -1,5 +1,6 @@
 import hashlib
 import time
+import re
 
 
 class Doctor:
@@ -12,8 +13,8 @@ class Doctor:
         self.last_name = self.valid_last_name(last_name)
         self.specialties = self.valid_specialties(specialties)
         self.address = self.valid_address(address)
-        self.lat = lat
-        self.lng = lng
+        self.lat = self.valid_lat(lat)
+        self.lng = self.valid_lng(lng)
         self.medical_coverages = self.valid_medical_coverages(
             medical_coverages)
         self.phone_number = self.valid_phone_number(phone_number)
@@ -41,7 +42,7 @@ class Doctor:
         doctor = Doctor(first_name, last_name, specialties, address,
                         lat, lng, medical_coverages, phone_number, photo_url)
         doctor_document = doctor.to_json()
-        collection = database.doctors
+        collection = database.db.doctors
         collection.insert_one(doctor_document)
         return doctor
 
@@ -52,7 +53,7 @@ class Doctor:
 
     @staticmethod
     def get_filtered_doctors(database, specialty, name):
-        collection = database.doctors  # Fixed collection assignment
+        collection = database.db.doctors  # Fixed collection assignment
         if not specialty and not name:
             return collection.find()
         elif not specialty:
@@ -71,19 +72,16 @@ class Doctor:
                 result.append(doctor)
         return result
 
-
     def valid_first_name(self, first_name):
-        if type(first_name) != str:
-            raise TypeError("The doctor's first name is not of type string")
-        if len(first_name) > 25:
-            raise ValueError("The doctor's first name exceeds 25 characters")
+        pattern = re.compile(r"^[A-Z][a-z'-]{1,24}$")
+        if not pattern.match(first_name):
+            raise ValueError("Invalid doctor first name format")
         return first_name
 
     def valid_last_name(self, last_name):
-        if type(last_name) != str:
-            raise TypeError("The doctor's last name is not of type string")
-        if len(last_name) > 25:
-            raise ValueError("The doctor's last name exceeds 25 characters")
+        pattern = re.compile(r"^[A-Z][a-z'-]{1,24}$")
+        if not pattern.match(last_name):
+            raise ValueError("Invalid doctor last name format")
         return last_name
 
     def valid_specialties(self, specialties):
@@ -126,13 +124,16 @@ class Doctor:
         return medical_coverages
 
     def valid_phone_number(self, phone_number):
-        if type(phone_number) != str:
-            raise TypeError("Doctor's office phone number should be of type str")
+        pattern = re.compile(
+            r"^(?:\+?1[-.\s]?)?(\()?(\d{3})(?(1)\))[-.\s]?(\d{3})[-.\s]?(\d{4})$")
+        if not pattern.match(phone_number):
+            raise ValueError("Invalid doctor phone number format")
         return phone_number
 
     def valid_photo_url(self, photo_url):
-        if type(photo_url) != str:
-            raise TypeError("Doctor's photo url should be of type string")
+        pattern = re.compile(r'^(http|https)://')
+        if not pattern.match(photo_url):
+            raise ValueError("Invalid doctor photo URL format")
         return photo_url
 
     def generate_doctor_id(self):
