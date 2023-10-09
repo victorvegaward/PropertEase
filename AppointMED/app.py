@@ -9,6 +9,7 @@ from patient import Patient
 from event import Event
 from user import User
 from dotenv import load_dotenv
+from bson import ObjectId
 
 load_dotenv()
 
@@ -50,10 +51,10 @@ def about():
 
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
-    user_email = session.get('email', None)
-    user = User.get_user_by_email(user_email, mongo.db)
+    user_id = session.get('_id', None)
+    user = User.get_user_by_id(user_id, mongo.db)
 
-    if not user:  # Add this check to see if a user is returned.
+    if not user:  
         flash('User not found.', 'danger')
         return redirect(url_for('home'))
 
@@ -69,7 +70,7 @@ def profile():
             medical_coverages = request.form.getlist('medical_coverages')
             
             collection = mongo.db.users
-            collection.update_one({"email": user_email}, {
+            collection.update_one({"_id": user_id}, {
                 "$set": {
                     "payload.first_name": first_name,
                     "payload.last_name": last_name,
@@ -79,8 +80,7 @@ def profile():
                     "payload.medical_coverages": medical_coverages
                 }
             })
-            # Refresh the user data after the update
-            user = User.get_user_by_email(user_email, mongo.db)
+            user = User.get_user_by_id(user_id, mongo.db)
 
         return render_template('doctor.html', doctor=user.payload)
 
@@ -94,16 +94,16 @@ def profile():
                 'phone_number', user.payload['phone_number'])
 
             collection = mongo.db.users
-            collection.update_one({"email": user_email}, {
+            collection.update_one({"_id": user_id}, {
                 "$set": {
                     "payload.first_name": first_name,
                     "payload.last_name": last_name,
                     "payload.phone_number": phone_number
                 }
             })
-            user = User.get_user_by_email(user_email, mongo.db)
+            user = User.get_user_by_id(user_id, mongo.db)
 
-        return render_template('patient.html', patient=user.payload)
+        return render_template('patient.html', user=user.payload)
 
     else:
         flash('Invalid profile type.', 'danger')
@@ -203,13 +203,11 @@ def signinPOST():
     email = request.form.get('email')
     password = request.form.get('password')
     user = mongo.db["users"].find_one({"email": email})
-    print(user)
-    print(password)
-    print(user.get('password'))
 
     if user and User.check_password(bcrypt, user.get('password'), password):
-        session["user_id"] = user.get('user_id')
-        session['user_role'] = user.get('role')
+        session["_id"] = str(user["_id"])
+        session['user_role'] = user["role"]
+
         flash('Login successful!', 'success')
         return redirect(url_for('home'))
     else:
@@ -226,11 +224,10 @@ def signupPOST():
     account_type = request.form.get('accountType')
     email = request.form.get('email')
 
-    # 1. Check if the email already exists in the database
+    # Check if the email already exists in the database
     existing_user = mongo.db["users"].find_one({"email": email})
 
     if existing_user:
-    # 2. If the email exists, flash an error message
         flash('An account with that email already exists!', 'danger')
         return signupGET()
 
@@ -241,24 +238,24 @@ def signupPOST():
 
     # Fields specific to the doctor role
     if account_type == "patient":
-            payload["first_name"] = request.form.get('patient_first_name')
-            payload["last_name"] = request.form.get('patient_last_name')
-            payload["phone_number"] = request.form.get('patient_phone_number')
+        payload["first_name"] = request.form.get('patient_first_name')
+        payload["last_name"] = request.form.get('patient_last_name')
+        payload["phone_number"] = request.form.get('patient_phone_number')
 
     if account_type == "doctor":
-            payload["first_name"] = request.form.get('first_name')
-            payload["last_name"] = request.form.get('last_name')
-            payload["specialties"] = request.form.getlist('specialties')
-            payload["address"] = request.form.get('address')
-            payload["medical_coverages"] = request.form.getlist(
-                'medical_coverages')
-            payload["phone_number"] = request.form.get('phone_number')
+        payload["first_name"] = request.form.get('first_name')
+        payload["last_name"] = request.form.get('last_name')
+        payload["specialties"] = request.form.getlist('specialties')
+        payload["address"] = request.form.get('address')
+        payload["medical_coverages"] = request.form.getlist('medical_coverages')
+        payload["phone_number"] = request.form.get('phone_number')
 
     # Create the user with the above payload
-    created_user = User.create_user(bcrypt, email=email, password=password,
-                                        role=account_type, payload=payload, database=mongo.db)
+    created_user = User.create_user(
+        bcrypt, email=email, password=password, role=account_type, payload=payload, database=mongo.db)
 
-    session['user_id'] = created_user.user_id
+
+    session['_id'] = created_user._id
     session['user_role'] = account_type
     flash('Account created!', 'success')
     return redirect(url_for('home'))

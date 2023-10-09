@@ -37,7 +37,7 @@
         >
 
         <!-- Sign-In/Sign-Up Tab -->
-        {% if 'user_id' not in session %}
+        {% if '_id' not in session %}
         <a
           class="nav-element border-transparent rounded-full hover:border-emerald-500"
           href="/signin"
@@ -46,7 +46,7 @@
         {% endif %}
 
         <!-- Round Profile Tab and Sign-Out option (visible only when logged in) -->
-        {% if 'user_id' in session %}
+        {% if '_id' in session %}
         <div class="nav-element-profile">
             <img
                 class="rounded-full h-10 w-10"
@@ -54,9 +54,7 @@
                 alt="Profile"
             />
             <div class="profile-dropdown" id="profileDropdown">
-                <!-- Go to User Profile Link -->
                 <a href="/profile">Profile</a>
-                <!-- Sign Out Link -->
                 <a href="/signout">Sign Out</a>
             </div>
         </div>
@@ -87,11 +85,6 @@
           </select>
         </div>
         
-        
-        
-        
-        
-        
         <div id="doctors">
             {% for user in users %}
             <a href="/Schedule/{{user['doc_id']}}">
@@ -103,7 +96,7 @@
                     </div>
                     <div class="doctor-name">
                         <p style="font-weight: bolder">
-                            Dr. {{ user['first_name'] }} {{ user['last_name'] }}
+                            Dr. {{ user.payload['first_name'] }} {{ user.payload['last_name'] }}
                         </p>
                         <div class="review">
                           <span class="star material-icons material-symbols-outlined"
@@ -124,71 +117,13 @@
                         </div>
                     </div>
                     <div class="doctor-specialty">
-                        {% for specialty in user['specialties'] %} {{ specialty }} {% endfor %}
+                        {% for specialty in user.payload['specialties'] %} {{ specialty }} {% endfor %}
                     </div>
                 </div>
             </a>
             {% endfor %}
         </div>
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        <div id="doctors">
-          {% for doctor in doctors %}
-          <a href="/Schedule/{{doctor['doc_id']}}">
-            <div
-              class="doctor cursor-pointer border-gray-300"
-              data-geo="{{ doctor['lat'] }},{{ doctor['lng'] }}"
-            >
-              <div class="doctor-photo-wrapper">
-                <span
-                  class="doctor-photo material-icons material-symbols-outlined"
-                >
-                  account_circle_full
-                </span>
-              </div>
-              <div class="doctor-name">
-                <p style="font-weight: bolder">
-                  Dr. {{ doctor['first_name'] }} {{ doctor['last_name'] }}
-                </p>
-                <div class="review">
-                  <span class="star material-icons material-symbols-outlined"
-                    >star</span
-                  >
-                  <span class="star material-icons material-symbols-outlined"
-                    >star</span
-                  >
-                  <span class="star material-icons material-symbols-outlined"
-                    >star</span
-                  >
-                  <span class="star material-icons material-symbols-outlined"
-                    >star</span
-                  >
-                  <span class="star material-icons material-symbols-outlined"
-                    >star</span
-                  >
-                </div>
-              </div>
-              <div class="doctor-specialty">
-                {% for specialty in doctor['specialties'] %} {{ specialty }} {%
-                endfor %}
-              </div>
-            </div>
-          </a>
-          {% endfor %}
-        </div>
         <div class="rounded-full" id="submit">
           <input class="cursor-pointer" type="submit" value="Search" />
         </div>

@@ -18,7 +18,8 @@ class Patient:
                 'phone_number': self.phone_number,
                 'patient_id': self.patient_id,
                 'role': self.role}
-
+        
+    # TODO REMOVE
     @staticmethod
     def create_patient(first_name, last_name, phone_number, database):
         patient = Patient(first_name, last_name, phone_number)
@@ -46,6 +47,7 @@ class Patient:
             raise ValueError("Invalid patient phone number format")
         return phone_number
 
+    # TODO REMOVE
     def generate_patient_id(self):
         cur_time = str(time.time())
         hashed_time = hashlib.sha1()

@@ -8,7 +8,7 @@ class Doctor:
     curr_specialties = {'dermatologist', 'allergist',
                         'cardiologist', 'gastroenterologist', 'neurologist'}
 
-    def __init__(self, first_name, last_name, specialties, address, lat, lng, medical_coverages, phone_number, photo_url):
+    def __init__(self, first_name, last_name, specialties, address, lat, lng, medical_coverages, phone_number):
         self.first_name = self.valid_first_name(first_name)
         self.last_name = self.valid_last_name(last_name)
         self.specialties = self.valid_specialties(specialties)
@@ -35,6 +35,7 @@ class Doctor:
             'role': self.role
         }
 
+# TODO REMOVE 
     @staticmethod
     def create_doctor(first_name, last_name, specialties, address, lat, lng, medical_coverages, phone_number, database):
         doctor = Doctor(first_name, last_name, specialties, address,
@@ -48,10 +49,9 @@ class Doctor:
     def get_doctors(mongo):
         return mongo.doctors.find()
 
-
     @staticmethod
     def get_filtered_doctors(database, specialty, name):
-        collection = database.doctors  # Fixed collection assignment
+        collection = database.users
         if not specialty and not name:
             return collection.find()
         elif not specialty:
@@ -128,12 +128,14 @@ class Doctor:
             raise ValueError("Invalid doctor phone number format")
         return phone_number
 
+    # TODO REMOVE
     def generate_doctor_id(self):
         cur_time = str(time.time())
         hashed_time = hashlib.sha1()
         hashed_time.update(cur_time.encode("utf8"))
         return hashed_time.hexdigest()
     
+    # TODO Check use
     @staticmethod
     def get_doctor_by_id(doc_id, mongo):
         user = mongo.db.users.find_one({"user_id": doc_id, "role": "doctor"})

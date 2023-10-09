@@ -1,7 +1,9 @@
 <div class="patient-profile">
-    <h2>Profile</h2>
-    <p>Name: <span>{{ user.first_name }} {{ user.last_name }}</span></p>
-    <p>Email: <span>{{ user.email }}</span></p>
+    <div class="profile-header">
+        <h2>{{ user.first_name }} {{ user.last_name }}</h2>
+        <p>Email: <span>{{ user.email }}</span></p>
+
+    </div>
 
     <h3>Appointments</h3>
     <table class="appointments-table">
@@ -9,6 +11,7 @@
             <tr>
                 <th>Date and Time</th>
                 <th>Doctor</th>
+                <th>Specialty</th>
                 <th>Location</th>
                 <th>Phone</th>
             </tr>
@@ -18,6 +21,7 @@
             <tr>
                 <td>{{ appointment.date }} at {{ appointment.time }}</td>
                 <td>Dr. {{ appointment.doctor_name }}</td>
+                <td>{{ appointment.doctor_specialty }}</td>
                 <td>{{ appointment.location }}</td>
                 <td>{{ appointment.phone }}</td>
             </tr>
