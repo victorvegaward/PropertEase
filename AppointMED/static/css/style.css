@@ -273,6 +273,11 @@ label {
     vertical-align: middle; /* Ensures vertical alignment */
 }
 
+.dropdown-menu-specialties,
+.dropdown-menu-coverages {
+    max-height: 150px;
+    overflow-y: auto;
+}
 /* ----------------------Profile-Home---------------------------- */
 .nav-element-profile {
     position: relative;

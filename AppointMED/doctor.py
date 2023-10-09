@@ -18,7 +18,6 @@ class Doctor:
         self.medical_coverages = self.valid_medical_coverages(
             medical_coverages)
         self.phone_number = self.valid_phone_number(phone_number)
-        self.photo_url = self.valid_photo_url(photo_url)
         self.doc_id = self.generate_doctor_id()
         self.role = 'doctor'
 
@@ -32,17 +31,16 @@ class Doctor:
             'lng': self.lng,
             'medical_coverages': self.medical_coverages,
             'phone_number': self.phone_number,
-            'photo_url': self.photo_url,
             'doc_id': self.doc_id,
             'role': self.role
         }
 
     @staticmethod
-    def create_doctor(first_name, last_name, specialties, address, lat, lng, medical_coverages, phone_number, photo_url, database):
+    def create_doctor(first_name, last_name, specialties, address, lat, lng, medical_coverages, phone_number, database):
         doctor = Doctor(first_name, last_name, specialties, address,
-                        lat, lng, medical_coverages, phone_number, photo_url)
+                        lat, lng, medical_coverages, phone_number)
         doctor_document = doctor.to_json()
-        collection = database.db.doctors
+        collection = database.doctors
         collection.insert_one(doctor_document)
         return doctor
 
@@ -53,7 +51,7 @@ class Doctor:
 
     @staticmethod
     def get_filtered_doctors(database, specialty, name):
-        collection = database.db.doctors  # Fixed collection assignment
+        collection = database.doctors  # Fixed collection assignment
         if not specialty and not name:
             return collection.find()
         elif not specialty:
@@ -130,14 +128,34 @@ class Doctor:
             raise ValueError("Invalid doctor phone number format")
         return phone_number
 
-    def valid_photo_url(self, photo_url):
-        pattern = re.compile(r'^(http|https)://')
-        if not pattern.match(photo_url):
-            raise ValueError("Invalid doctor photo URL format")
-        return photo_url
-
     def generate_doctor_id(self):
         cur_time = str(time.time())
         hashed_time = hashlib.sha1()
         hashed_time.update(cur_time.encode("utf8"))
         return hashed_time.hexdigest()
+    
+    @staticmethod
+    def get_doctor_by_id(doc_id, mongo):
+        user = mongo.db.users.find_one({"user_id": doc_id, "role": "doctor"})
+        if user:
+            doctor_data = user["payload"]
+            return Doctor(
+                doctor_data['first_name'],
+                doctor_data['last_name'],
+                doctor_data['specialties'],
+                doctor_data['address'],
+                doctor_data.get('lat', 0.0),
+                doctor_data.get('lng', 0.0),
+                doctor_data['medical_coverages'],
+                doctor_data['phone_number'],
+                doctor_data.get('photo_url', '')
+            )
+        return None
+    
+    @staticmethod
+    def get_doctor_by_email(email, mongo):
+        user = mongo.db.users.find_one({"email": email, "role": "doctor"})
+        if user:
+            doctor_data = user["payload"]
+            return Doctor(doctor_data['first_name'], doctor_data['last_name'], doctor_data['phone_number'])
+        return None

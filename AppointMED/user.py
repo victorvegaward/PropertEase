@@ -31,13 +31,13 @@ class User:
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
         user = User(user_id, email, hashed_password, role, payload)
         user_document = user.to_json()
-        collection = database.db["users"]
+        collection = database["users"]
         collection.insert_one(user_document)
         return user
 
     @staticmethod
     def get_user_by_email(email, database):
-        collection = database.db["users"]
+        collection = database["users"]
         user_document = collection.find_one({"email": email})
 
         if user_document:

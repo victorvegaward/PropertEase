@@ -86,6 +86,65 @@
             <option value="gastroenterologist">Gastroenterologist</option>
           </select>
         </div>
+        
+        
+        
+        
+        
+        
+        <div id="doctors">
+            {% for user in users %}
+            <a href="/Schedule/{{user['doc_id']}}">
+                <div class="doctor cursor-pointer border-gray-300" data-geo="{{ user['lat'] }},{{ user['lng'] }}">
+                    <div class="doctor-photo-wrapper">
+                        <span class="doctor-photo material-icons material-symbols-outlined">
+                            account_circle_full
+                        </span>
+                    </div>
+                    <div class="doctor-name">
+                        <p style="font-weight: bolder">
+                            Dr. {{ user['first_name'] }} {{ user['last_name'] }}
+                        </p>
+                        <div class="review">
+                          <span class="star material-icons material-symbols-outlined"
+                            >star</span
+                          >
+                          <span class="star material-icons material-symbols-outlined"
+                            >star</span
+                          >
+                          <span class="star material-icons material-symbols-outlined"
+                            >star</span
+                          >
+                          <span class="star material-icons material-symbols-outlined"
+                            >star</span
+                          >
+                          <span class="star material-icons material-symbols-outlined"
+                            >star</span
+                          >
+                        </div>
+                    </div>
+                    <div class="doctor-specialty">
+                        {% for specialty in user['specialties'] %} {{ specialty }} {% endfor %}
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         <div id="doctors">
           {% for doctor in doctors %}
           <a href="/Schedule/{{doctor['doc_id']}}">

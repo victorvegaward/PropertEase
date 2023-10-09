@@ -37,10 +37,10 @@ doctor_ids = {"Richard Silverstein": "1234"}
 @app.route("/", methods=["GET", "POST"])
 @app.route("/home", methods=["GET", "POST"])
 def home():
-    doctors = None
     if request.method == "GET":
-        doctors = mongo.db['doctors'].find()
-    return render_template("home.html", doctors=doctors)
+        users = mongo.db.users.find({"role": "doctor"})
+    return render_template('home.html', users=users)
+
 
 
 @app.route("/about")
@@ -50,48 +50,41 @@ def about():
 
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
-    user_role = session.get('user_role', None)
+    user_email = session.get('email', None)
+    user = User.get_user_by_email(user_email, mongo.db)
 
-    if user_role == "doctor":
+    if not user:  # Add this check to see if a user is returned.
+        flash('User not found.', 'danger')
+        return redirect(url_for('home'))
 
-        doctor = Doctor.get_doctor_by_id(session['user_id'], mongo)
+    if user.role == "doctor":
         if request.method == 'POST':
 
-            first_name = request.form.get('first_name', doctor.first_name)
-            last_name = request.form.get('last_name', doctor.last_name)
+            first_name = request.form.get('first_name', user.first_name)
+            last_name = request.form.get('last_name', user.last_name)
             specialties = request.form.getlist('specialties')
-            address = request.form.get('address', doctor.address)
+            address = request.form.get('address', user.address)
             phone_number = request.form.get(
-                'phone_number', doctor.phone_number)
-            photo = request.files.get('photo')
-            photo_url = doctor.photo_url
-
-            if photo:
-                file_path = os.path.join('static/images/pfp', photo.filename)
-                photo.save(file_path)
-                photo_url = url_for(
-                    'static', filename='images/pfp/' + photo.filename)
-
+                'phone_number', user.phone_number)
             medical_coverages = request.form.getlist('medical_coverages')
-            collection = mongo.db.doctors
-            collection.update_one({"doc_id": doctor.doc_id}, {
+            
+            collection = mongo.db.users
+            collection.update_one({"email": user_email}, {
                 "$set": {
-                    "first_name": first_name,
-                    "last_name": last_name,
-                    "specialties": specialties,
-                    "address": address,
-                    "phone_number": phone_number,
-                    "photo_url": photo_url,
-                    "medical_coverages": medical_coverages
+                    "payload.first_name": first_name,
+                    "payload.last_name": last_name,
+                    "payload.specialties": specialties,
+                    "payload.address": address,
+                    "payload.phone_number": phone_number,
+                    "payload.medical_coverages": medical_coverages
                 }
             })
-            doctor = Doctor.get_doctor_by_id(session['user_id'], mongo)
-        return render_template('doctor.html', doctor=doctor)
+            # Refresh the user data after the update
+            user = User.get_user_by_email(user_email, mongo.db)
 
-    elif user_role == "patient":
+        return render_template('doctor.html', doctor=user.payload)
 
-        user = User.get_user_by_email(session.get('email', ''), mongo)
-
+    elif user.role == "patient":
         if request.method == 'POST':
             first_name = request.form.get(
                 'first_name', user.payload['first_name'])
@@ -100,20 +93,16 @@ def profile():
             phone_number = request.form.get(
                 'phone_number', user.payload['phone_number'])
 
-            # Modify this to update in the users collection
-            collection = mongo.db["users"]
-
-            collection.update_one({"email": session.get('email', '')}, {
+            collection = mongo.db.users
+            collection.update_one({"email": user_email}, {
                 "$set": {
                     "payload.first_name": first_name,
                     "payload.last_name": last_name,
                     "payload.phone_number": phone_number
                 }
             })
+            user = User.get_user_by_email(user_email, mongo.db)
 
-            user = User.get_user_by_email(session.get('email', ''), mongo)
-
-        # Use payload directly
         return render_template('patient.html', patient=user.payload)
 
     else:
@@ -123,8 +112,9 @@ def profile():
 
 @app.route("/Schedule/<doc_id>", methods=["GET", "POST"])
 def schedule(doc_id):
-    collection = mongo.db.doctors
-    doctor = collection.find_one({'doc_id': doc_id})
+    
+    user = mongo.db.users.find_one({"user_id": doc_id, "role": "doctor"})
+    doctor = user['payload']
 
     medical_plans = doctor['medical_coverages']
     doctor_name = doctor['first_name'] + " " + doctor['last_name']
@@ -212,7 +202,7 @@ def signinGET():
 def signinPOST():
     email = request.form.get('email')
     password = request.form.get('password')
-    user = mongo.db["db.users"].find_one({"email": email})
+    user = mongo.db["users"].find_one({"email": email})
     print(user)
     print(password)
     print(user.get('password'))
@@ -237,7 +227,7 @@ def signupPOST():
     email = request.form.get('email')
 
     # 1. Check if the email already exists in the database
-    existing_user = mongo.db["db.users"].find_one({"email": email})
+    existing_user = mongo.db["users"].find_one({"email": email})
 
     if existing_user:
     # 2. If the email exists, flash an error message
@@ -263,12 +253,6 @@ def signupPOST():
             payload["medical_coverages"] = request.form.getlist(
                 'medical_coverages')
             payload["phone_number"] = request.form.get('phone_number')
-            photo = request.files.get('photo')
-
-    if photo:
-        file_path = os.path.join('static/images/pfp', photo.filename)
-        photo.save(file_path)
-        payload["photo_url"] = url_for('static', filename='images/pfp/' + photo.filename)
 
     # Create the user with the above payload
     created_user = User.create_user(bcrypt, email=email, password=password,

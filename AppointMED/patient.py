@@ -53,9 +53,9 @@ class Patient:
         return hashed_time.hexdigest()
 
     @staticmethod
-    def get_patient_by_email(email, database):
-        collection = database.db.patients
-        patient_data = collection.find_one({"email": email})
-        if patient_data:
+    def get_patient_by_email(email, mongo):
+        user = mongo.db.users.find_one({"email": email, "role": "patient"})
+        if user:
+            patient_data = user["payload"]
             return Patient(patient_data['first_name'], patient_data['last_name'], patient_data['phone_number'])
         return None
