@@ -1,31 +1,72 @@
-<div class="patient-profile">
-    <div class="profile-header">
-        <h2>{{ user.first_name }} {{ user.last_name }}</h2>
-        <p>Email: <span>{{ user.email }}</span></p>
-
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&family=Whisper&display=swap"
+          rel="stylesheet"
+        />
+        <link
+          href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          rel="stylesheet"
+        />
+        <link rel="stylesheet" href="../static/css/style.css" />
+    
+        <title>Patient Profile</title>
+    </head>
+    <div class="patient-profile">
+        <div class="profile-header">
+            <h1>{{ user.payload.first_name }} {{ user.payload.last_name }}</h1>
+            <p>Email: <span>{{ user.email }}</span></p>
+            <a class="nav-element border-transparent rounded-full hover:border-emerald-500" 
+            href="/signout">Sign Out</a>
+            
+        </div>
+        <div class="row">
+            <div class="column">
+                <h3>Citas Activas:</h3>
+                <table class="appointments-table">
+                    <thead>
+                        <tr>
+                            <th>Date and Time:</th>
+                            <th>Doctor:</th>
+                            <th>Location:</th>
+                            <th>Phone:</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for appointment in user.appointments %}
+                        <tr>
+                            <td>{{ appointment.date }} at {{ appointment.time }}</td>
+                            <td>{{ appointment.doctor_name }}</td>
+                            <td>{{ appointment.location }}</td>
+                            <td>{{ appointment.phone }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="column">
+                <h3>Notificaciones:</h3>
+                <p>Coming Soon!</p>
+            </div>
+            <div class="column">
+                <div class="patient-buttons">
+                    <a
+                    class="nav-element border-transparent rounded-full hover:border-emerald-500"
+                    href="/home"
+                    >Encontrar Citas</a
+                  >
+                  <a
+                  class="nav-element border-transparent rounded-full hover:border-emerald-500"
+                  href=""
+                  >Citas Previas (Coming Soon)</a
+                >
+                </div>
+            </div>
+        </div>
     </div>
-
-    <h3>Appointments</h3>
-    <table class="appointments-table">
-        <thead>
-            <tr>
-                <th>Date and Time</th>
-                <th>Doctor</th>
-                <th>Specialty</th>
-                <th>Location</th>
-                <th>Phone</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for appointment in user.appointments %}
-            <tr>
-                <td>{{ appointment.date }} at {{ appointment.time }}</td>
-                <td>Dr. {{ appointment.doctor_name }}</td>
-                <td>{{ appointment.doctor_specialty }}</td>
-                <td>{{ appointment.location }}</td>
-                <td>{{ appointment.phone }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+</html>

@@ -103,7 +103,8 @@ def profile():
             })
             user = User.get_user_by_id(user_id, mongo.db)
 
-        return render_template('patient.html', user=user.payload)
+
+        return render_template('patient.html', user=user)
 
     else:
         flash('Invalid profile type.', 'danger')
