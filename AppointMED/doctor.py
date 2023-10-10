@@ -5,8 +5,8 @@ import re
 
 class Doctor:
 
-    curr_specialties = {'dermatologist', 'allergist',
-                        'cardiologist', 'gastroenterologist', 'neurologist'}
+    curr_specialties = {'cardiologist', 'dermatologist',
+                        'allergist', 'generalist', 'pediatrician', 'orthopedist', 'ophtalmologist', 'radiologist'}
 
     def __init__(self, first_name, last_name, specialties, address, lat, lng, medical_coverages, phone_number):
         self.first_name = self.valid_first_name(first_name)
@@ -150,7 +150,7 @@ class Doctor:
                 doctor_data.get('lng', 0.0),
                 doctor_data['medical_coverages'],
                 doctor_data['phone_number'],
-                doctor_data.get('photo_url', '')
+                doctor_data.get('photo_url', '/AppointMED/static/images/generic-user-pfp.png')
             )
         return None
     

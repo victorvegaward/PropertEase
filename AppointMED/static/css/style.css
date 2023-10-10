@@ -1,284 +1,54 @@
-/* clears the ‘X’ from Internet Explorer */
-input[type=search]::-ms-clear { display: none; width : 0; height: 0; }
-input[type=search]::-ms-reveal { display: none; width : 0; height: 0; }
-/* clears the ‘X’ from Chrome */
+/* Clear the 'X' from search inputs */
+input[type=search]::-ms-clear,
+input[type=search]::-ms-reveal,
 input[type="search"]::-webkit-search-decoration,
 input[type="search"]::-webkit-search-cancel-button,
 input[type="search"]::-webkit-search-results-button,
-input[type="search"]::-webkit-search-results-decoration { display: none; }
+input[type="search"]::-webkit-search-results-decoration {
+    display: none;
+}
 
-html body {
-    min-height: 100vh;
+/* Basic Global Styles */
+html,
+body {
+    height: 100%;
+    overflow-x: hidden;
+    /* Prevent horizontal scroll */
+    transition: all 0.3s ease;
+    background-color: #f4f6f8;
+    /* Slightly different shade for the body */
     font-family: 'Roboto', sans-serif;
 }
 
 .header-logo {
-    height: 80px;
-    width: 80px;
-    margin-left: 20px;
-}
-
-.navbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 60px;
-    padding: 0 20px;
-    overflow: visible; 
+    height: 40px;
+    transition: all 0.3s ease;
 }
 
 .navbar-elements {
     display: flex;
     align-items: center;
-    gap: 10px;
-}
-
-input:focus, textarea:focus, select:focus{
-    outline: none;
-}
-
-#doctor-name{
-    display: flex;
-    align-items: center;
-    width: 70%;
-}
-
-
-#search-input{
-    display: flex;
-    width: 100%;
-}
-
-#map{
-  width: 100%;
-  height: 100%; 
-  /* margin: 50px; */
-  
-}
-#search{
-    height: 90vh;
-    width: 30vw;
-    padding: 30px;
-}
-
-#map-view{
-    height: 90vh;
-    width: 70vw;
-    padding: 30px;
-}
-#main{  
-    height: 90vh;
-}
-
-#doctors {
-    height: 75vh;
-    padding-top: 40px;
-    overflow-y: auto;
-}
-
-#submit {
-    float: right;
-    background-color: #2292A4;
-    color: white;
-    padding: 7px 20px;
-    cursor: pointer;
-}
-
-.doctor {
-    display: flex;
-    height: 8vh;
+    justify-content: space-between;
     padding-top: 10px;
-    padding-bottom: 10px;
-    margin-top: 10px;
-    border-width: 0px 0px 1px 0px;
-}
-
-.doctor-photo {
-    font-size: 48px;
-    color: #336AEB;
-}
-
-.doctor-photo-wrapper{
-    width: 10%;
-}
-
-.doctor-name{
-    width: 60%;
-    padding-left: 20px;
-}
-
-.doctor-specialty{
-    width: 30%;
-}
-
-.star {
-    font-size: 14px;
-    color:  #ffa41b;
-}
-
-.navbar-elements a {
-    margin: 20px;
-}
-.about-header {
-    font-size: 3em;
-}
-.about-content h1 {
-    display: flex;
-    justify-content: center;
-    font-size: 4em;
-}
-.about-content  {
-    position: absolute;
-    left: 50vw;
-    width: 500px;
-    margin-left: -250px;
 }
 
 .nav-element {
-    border-width: 1px 1px 1px 1px;
-    padding: 5px 10px;
-
+    text-decoration: none;
+    margin-right: 15px;
+    padding: 8px 15px;
+    transition: all 0.3s ease;
 }
 
-.event-header {
-    display: flex;
-    justify-content: center;
-    font-size: 4em;
-}
-.event-content {
-    display: flex;
-    justify-content: center;
-    font-size: 1.5em;
-}
-.doc-image{
-    float: left; 
-    margin: 0px 15px 0px 0px; 
-    max-width: 25vw;
-    max-height: 25vh; 
-    margin-left: 3vw;
-    display: flexbox;
-
-}
-.select-date{
-    align-items: center; 
-    align-self: center; 
-    max-width: 25vw; 
-    font-size: larger; 
-    display:flexbox; 
-    float: left;
-    margin-left: 10vw; 
-    margin-top: 3vh;
-}
-.available-times{
-    width:25vw;
-    display:flexbox; 
-    margin-top: 10px;
-}
-.submit-button{
-    margin-top:30px;
-}
-.center{
-    text-align: center;
-}
-.doctor-nameP{
-    font-size: xx-large;
-    text-align: center;
-}
-.specialties{
-    font-size: x-large;
-}
-.large-text{
-   font-size: large;
-}
-.auth-container {
-    display: flex;
-    justify-content: space-around;
-    /* align-items: center;
-    height: 80vh;
-    padding: 0px; */
+.nav-element:last-child {
+    margin-right: 0;
 }
 
-.auth-form {
-    /* display: block;
-    width: 50%;
-
-
- */
-    width: 45%; /* This makes each form take up roughly half of the container's width, adjust as necessary */
-    margin: 1em;
-    box-sizing: border-box;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    padding: 50px;
-}
-
-.input-group {
-    margin-bottom: 20px;
-}
-
-.input-group label {
-    display: block;
-    margin-bottom: 10px;
-}
-
-.input-group input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
+.nav-element:hover {
+    background-color: #e2e8f0;
+    /* Light gray background on hover */
     border-radius: 5px;
-    font-family: 'Roboto', sans-serif;
 }
 
-.auth-divider {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 10%;
-    font-weight: bolder;
-}
-
-.auth-divider span {
-    background-color: #ffffff;
-    padding: 0 20px;
-}
-
-.auth-container {
-    max-width: 90%;
-    overflow-y: auto; /* Scroll if content overflows */
-    flex-grow: 1; /* Takes the available space */
-}
-
-.insurance-list {
-    display: flex;
-    flex-direction: column;
-}
-
-.insurance-list input {
-    margin-bottom: 10px;
-}
-
-body {
-    display: flex;
-    flex-direction: column;
-    overflow: visible; 
-}
-
-.admin-signup {
-    display: block;
-}
-
-input[type="radio"],
-label {
-    display: inline-block;
-    vertical-align: middle; /* Ensures vertical alignment */
-}
-
-.dropdown-menu-specialties,
-.dropdown-menu-coverages {
-    max-height: 150px;
-    overflow-y: auto;
-}
-/* ----------------------Profile-Home---------------------------- */
 .nav-element-profile {
     position: relative;
     cursor: pointer;
@@ -287,88 +57,122 @@ label {
 .profile-dropdown {
     display: none;
     position: absolute;
+    top: 40px;
     right: 0;
-    top: 100%; /* Positions the dropdown right below the profile image */
-    width: 150px; /* Set a specific width for consistency */
-    border: 1px solid #ccc;
     background-color: white;
-    border-radius: 5px; /* Add some rounded corners */
-    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1); /* Add a subtle shadow for depth */
-    z-index: 9999;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    z-index: 1;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .profile-dropdown a {
     display: block;
-    padding: 10px 15px;
+    padding: 8px 15px;
     text-decoration: none;
     color: black;
-    border-bottom: 1px solid #f0f0f0; /* Slight separation between options */
-}
-
-.profile-dropdown a:last-child {
-    border-bottom: none; /* Remove border for the last item */
+    transition: background 0.3s ease;
 }
 
 .profile-dropdown a:hover {
-    background-color: #f5f5f5;
+    background-color: rgba(0, 0, 0, 0.02);
 }
 
-/* Patients and Doctors CSS */
-.patient-profile,
 .doctor-profile {
-    padding: 20px;
-    background-color: #f5f5f5;
-    border-radius: 10px;
+    background-color: white;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-.appointments-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-
-.appointments-table,
-.appointments-table th,
-.appointments-table td {
-    border: 1px solid #ccc;
-}
-
-.appointments-table th,
-.appointments-table td {
-    padding: 10px;
-    text-align: left;
-}
-
-/* Doctor Specific CSS */
 .doctor-image {
     width: 150px;
     height: 150px;
-    object-fit: cover;
-    border-radius: 75px;
-    margin-bottom: 20px;
 }
 
-/* Patient Specific CSS */
-.profile-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #e9f5f8;
-    padding: 10px 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
+/* Navbar Styles */
+nav {
+    transition: all 0.3s ease;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-.patient-profile {
-    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
-    max-width: 800px;
-    margin: 20px auto;
+nav a:hover {
+    transition: all 0.3s ease;
+    border-bottom: 2px solid blue;
+    padding-bottom: 3px;
 }
 
-.appointments-table {
-    transition: 0.3s;
+.container {
+    max-width: 1200px;
 }
 
-.appointments-table tbody tr:hover {
-    background-color: #e9f5f8;
+/* About Content */
+.container>h1,
+.container>h2 {
+    color: #333;
+}
+
+.container>p {
+    font-size: 18px;
+    line-height: 1.7;
+}
+
+.container ul {
+    margin-left: 1.25rem;
+    list-style-type: circle;
+}
+
+/* Search Form */
+form {
+    transition: all 0.3s ease;
+}
+
+form button:hover {
+    transform: translateY(-3px);
+}
+
+/* Doctor Listings */
+.block.border {
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.block.border:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Google Map */
+#map {
+    transition: all 0.3s ease;
+}
+
+/* Footer Styles */
+footer {
+    padding: 20px 0;
+    text-align: center;
+    color: #666;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Interactions */
+.nav-element-profile:hover .profile-dropdown {
+    display: block;
+}
+
+/* Enhance responsiveness on smaller devices */
+@media (max-width: 768px) {
+    nav {
+        flex-direction: column;
+    }
+
+    form,
+    .w-2/3 {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .container {
+        padding: 0 15px;
+    }
 }

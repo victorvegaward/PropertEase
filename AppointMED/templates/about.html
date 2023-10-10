@@ -1,47 +1,72 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.1.2/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&family=Whisper&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="../static/css/style.css">
-    <title>MedEasy</title>
+    <title>About</title>
 </head>
-<body>
-    <div class="navbar">
-        <img class="header-logo" src="../static/images/MedEasy.svg" alt="MedEasy logo">
-        <div class="navbar-elements">
-            <a class="nav-element border-transparent rounded-full hover:border-emerald-500" href="/home">Home</a>
-            <a class="nav-element border-transparent rounded-full hover:border-emerald-500" href="/about">About</a>
+
+<body class="bg-gray-100 font-roboto">
+
+    <!-- Navbar -->
+    <nav class="bg-white shadow-lg p-4">
+        <div class="container mx-auto flex items-center justify-between">
+            <a href="/home">
+                <img class="h-10" src="../static/images/MedEasy.svg" alt="MedEasy logo">
+            </a>
+            <div class="space-x-4">
+                <a class="text-gray-700 hover:text-gray-900 px-3 py-2 rounded hover:bg-gray-200" href="/home">Home</a>
+                <a class="text-gray-700 hover:text-gray-900 px-3 py-2 rounded hover:bg-gray-200" href="/about">About</a>
+                {% if '_id' not in session %}
+                <a class="text-gray-700 hover:text-gray-900 px-3 py-2 rounded hover:bg-gray-200" href="/signin">Sign In/Sign Up</a>
+                {% endif %}
+                {% if '_id' in session %}
+                <!-- Profile Dropdown -->
+                <div class="relative inline-block text-left">
+                    <img class="h-10 w-10 rounded-full cursor-pointer" src="{{ session['image_path'] or '../static/images/generic-user-pfp.png' }}" onclick="toggleDropdown()" alt="Profile">
+                    <div id="profileDropdown" class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 z-10" style="display: none;">
+                        <a href="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
+                        <a href="/signout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign Out</a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
         </div>
+    </nav>
+
+    <!-- About Content -->
+    <div class="container mx-auto mt-16 p-6 bg-white rounded-lg shadow-md">
+        <h1 class="text-5xl mb-8 font-semibold text-center">About MedEasy</h1>
+        <p class="text-gray-700 leading-relaxed mb-4">
+            MedEasy is a platform designed to bridge the gap between patients and doctors. Our mission is to streamline the appointment booking process and make it easy for patients to find the best medical professionals tailored to their needs.
+        </p>
+        <p class="text-gray-700 leading-relaxed mb-4">
+            Whether you're searching for a general practitioner or a specialist, MedEasy provides comprehensive doctor profiles, real-time availability, and an intuitive appointment booking system.
+        </p>
+        <p class="text-gray-700 leading-relaxed mb-4">
+            Beyond the utility, we ensure a high standard of data privacy and security. All your medical records and personal information are encrypted and stored securely.
+        </p>
+        <h2 class="text-3xl mt-8 mb-4 font-semibold">Why Choose Us?</h2>
+        <ul class="list-disc pl-8 mb-4">
+            <li class="mb-2">User-friendly interface with seamless navigation.</li>
+            <li class="mb-2">Real-time doctor availability and instant booking.</li>
+            <li class="mb-2">Comprehensive doctor profiles with patient reviews.</li>
+            <li class="mb-2">Secure storage of personal and medical information.</li>
+            <li class="mb-2">Friendly customer support always ready to assist.</li>
+        </ul>
     </div>
-<div class="about-content">
-    <h1>Frequently Asked Questions</h1>
-    <ul>
-        <li>
-            <h2>What is MedEasy?</h2>
-            <p>MedEasy is a web application that allows you to schedule appointments with your doctor.
-                You can also view your appointments and see your doctor's availability.</p>
-        </li>
-        <br>
-        <li>
-            <h2>How do I schedule an appointment?</h2>
-            <p>To schedule an appointment, you don't need to sign up. Just click on a doctor which fits your needs
-                and choose a date and time that works for you.
-            </p>
-        </li>
-        <br>
-        <li>
-            <h2>How do I view my appointments?</h2>
-            <p></p>
-        </li>
-        <br>
-        <li>
-            <h2>How do I view my doctor's availability?</h2>
-            <p>Clik on the "Home" tab and choose a doctor. After that you can select a date you would like to view
-                availability for.</p>
-        </li>
-    </ul>
-</div>
+
+    <script>
+        function toggleDropdown() {
+            const dropdown = document.getElementById('profileDropdown');
+            dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+        }
+    </script>
 </body>
 </html>

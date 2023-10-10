@@ -1,45 +1,74 @@
-<div class="doctor-profile">
-    <!-- Profile Picture -->
-    <img src="{{ doctor.photo_url }}" alt="Doctor's profile picture" class="doctor-image"> 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&family=Whisper&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <title>Profile</title>
+  </head>
+<body class="bg-gray-50 font-roboto">
+     <!-- Navbar -->
+    <nav class="bg-white shadow-lg p-4">
+        <div class="container mx-auto flex items-center justify-between">
+            <a href="/home">
+                <img class="h-10" src="../static/images/MedEasy.svg" alt="MedEasy logo">
+            </a>
+            <div class="space-x-4">
+                <a class="text-gray-700 hover:text-gray-900 px-3 py-2 rounded hover:bg-gray-200" href="/home">Home</a>
+                <a class="text-gray-700 hover:text-gray-900 px-3 py-2 rounded hover:bg-gray-200" href="/about">About</a>
+                {% if '_id' not in session %}
+                <a class="text-gray-700 hover:text-gray-900 px-3 py-2 rounded hover:bg-gray-200" href="/signin">Sign In/Sign Up</a>
+                {% endif %}
+                {% if '_id' in session %}
+                <!-- Profile Dropdown -->
+                <div class="relative inline-block text-left">
+                    <img class="h-10 w-10 rounded-full cursor-pointer" src="{{ session['image_path'] or '../static/images/generic-user-pfp.png' }}" onclick="toggleDropdown()" alt="Profile">
+                    <div id="profileDropdown" class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 z-10" style="display: none;">
+                        <a href="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
+                        <a href="/signout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign Out</a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
 
-    <!-- Doctor's Name and Specialty -->
-    <h2>Dr. {{ doctor.first_name }} {{ doctor.last_name }}</h2> 
+    <div class="doctor-profile bg-white mx-auto mt-10 p-8 rounded-lg shadow-xl max-w-xl">
+        <div class="flex items-center justify-center mb-8">
+            <img src="{{ doctor.photo_url }}" alt="Profile Picture" class="doctor-image rounded-full border-4 border-indigo-400">
+        </div>
+        <h2 class="text-2xl font-semibold text-center mb-4">Dr. {{ doctor.first_name }} {{ doctor.last_name }}</h2>
 
-    <!-- Specialties (looping through specialties list) -->
-    <div class="specialties">
-        <strong>Specialties:</strong>
-        {% for specialty in doctor.specialties %}
-            <span>{{ specialty }}</span>
-        {% endfor %}
+        <!-- Location & Phone Number -->
+        <p class="mb-4"><strong>Location:</strong> {{ doctor.address }}</p>
+        <p class="mb-4"><strong>Phone:</strong> {{ doctor.phone_number }}</p>
+
+        <!-- Specialties -->
+        <div class="mb-4">
+            <p class="font-medium text-lg mb-2"><strong>Specialties:</strong></p>
+            <ul>
+                {% for specialty in doctor.specialties[] %}
+                    <li class="mb-1">{{ specialty }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Medical Plans -->
+        <div>
+            <p class="font-medium text-lg mb-2"><strong>Medical Plans Accepted:</strong></p>
+            <ul>
+                {% for plan in doctor.medical_coverages %}
+                    <li class="mb-1">{{ plan }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Modify Profile Button -->
+        <button class="mt-8 bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700">Modify Profile</button>
     </div>
-
-    <!-- Location -->
-    <p>Location: {{ doctor.address }}</p>
-
-    <!-- Phone Number -->
-    <p>Phone: {{ doctor.phone_number }}</p>
-
-    <!-- Modify Profile Button -->
-    <button onclick="modifyProfileFunction()">Modify Profile</button>
-
-    <!-- Services (Not clear in current setup, adding a placeholder) -->
-    <h3>Services Offered</h3>
-    <ul>
-        <!-- Assuming doctor has a list called services -->
-        {% for service in doctor.services|default([]) %}
-            <li>{{ service.name }} - {{ service.duration }}</li>
-        {% endfor %}
-    </ul>
-
-    <!-- Medical Plans -->
-    <h3>Medical Plans Accepted</h3>
-    <ul>
-        {% for plan in doctor.medical_coverages %}
-            <li>{{ plan }}</li>
-        {% endfor %}
-    </ul>
-
-    <!-- Ratings and Reviews -->
-    <h3>Ratings and Reviews</h3>
-    <!-- Placeholder for now -->
-</div>
+</body>
+</body>
+</html>

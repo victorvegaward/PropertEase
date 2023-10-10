@@ -1,151 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&family=Whisper&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="../static/css/style.css" />
-
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&family=Whisper&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/style.css">
     <title>MedEasy</title>
-  </head>
-  <body>
-    <div class="navbar">
-      <img
-        class="header-logo"
-        src="../static/images/MedEasy.svg"
-        alt="MedEasy logo"
-      />
-      <div class="navbar-elements">
-        <a
-          class="nav-element border-transparent rounded-full hover:border-emerald-500"
-          href="/home"
-          >Home</a
-        >
-        <a
-          class="nav-element border-transparent rounded-full hover:border-emerald-500"
-          href="/about"
-          >About</a
-        >
+</head>
 
-        <!-- Sign-In/Sign-Up Tab -->
-        {% if '_id' not in session %}
-        <a
-          class="nav-element border-transparent rounded-full hover:border-emerald-500"
-          href="/signin"
-          >Sign In/Sign Up</a
-        >
-        {% endif %}
+<body class="bg-gray-100 font-roboto">
 
-        <!-- Round Profile Tab and Sign-Out option (visible only when logged in) -->
-        {% if '_id' in session %}
-        <div class="nav-element-profile">
-            <img
-                class="rounded-full h-10 w-10"
-                src="{{ session['image_path'] or '../static/images/generic-user-pfp.png' }}"
-                alt="Profile"
-            />
-            <div class="profile-dropdown" id="profileDropdown">
-                <a href="/profile">Profile</a>
-                <a href="/signout">Sign Out</a>
-            </div>
-        </div>
-        {% endif %}
-
-      </div>
-    </div>
-    <div id="main" class="flex">
-      <form id="search" method="post" action="/home">
-        <div id="search-input">
-          <div id="doctor-name">
-            <span class="material-icons material-icons-outlined"> search</span>
-            <input
-              class="style:none"
-              placeholder="Search Doctor..."
-              type="search"
-              name="doctor-name"
-              id="doctor-name"
-            />
-          </div>
-
-          <select name="doctor-specialty" id="doctor-specialty">
-            <option value="">All</option>
-            <option value="dermatologist">Dermatologist</option>
-            <option value="allergist">Allergist</option>
-            <option value="cardiologist">Cardiologist</option>
-            <option value="gastroenterologist">Gastroenterologist</option>
-          </select>
-        </div>
-        
-        <div id="doctors">
-            {% for user in users %}
-            <a href="/Schedule/{{user['doc_id']}}">
-                <div class="doctor cursor-pointer border-gray-300" data-geo="{{ user['lat'] }},{{ user['lng'] }}">
-                    <div class="doctor-photo-wrapper">
-                        <span class="doctor-photo material-icons material-symbols-outlined">
-                            account_circle_full
-                        </span>
-                    </div>
-                    <div class="doctor-name">
-                        <p style="font-weight: bolder">
-                            Dr. {{ user.payload['first_name'] }} {{ user.payload['last_name'] }}
-                        </p>
-                        <div class="review">
-                          <span class="star material-icons material-symbols-outlined"
-                            >star</span
-                          >
-                          <span class="star material-icons material-symbols-outlined"
-                            >star</span
-                          >
-                          <span class="star material-icons material-symbols-outlined"
-                            >star</span
-                          >
-                          <span class="star material-icons material-symbols-outlined"
-                            >star</span
-                          >
-                          <span class="star material-icons material-symbols-outlined"
-                            >star</span
-                          >
-                        </div>
-                    </div>
-                    <div class="doctor-specialty">
-                        {% for specialty in user.payload['specialties'] %} {{ specialty }} {% endfor %}
+     <!-- Navbar -->
+    <nav class="bg-white shadow-lg p-4">
+        <div class="container mx-auto flex items-center justify-between">
+            <a href="/home">
+                <img class="h-10" src="../static/images/MedEasy.svg" alt="MedEasy logo">
+            </a>
+            <div class="space-x-4">
+                <a class="text-gray-700 hover:text-gray-900 px-3 py-2 rounded hover:bg-gray-200" href="/home">Home</a>
+                <a class="text-gray-700 hover:text-gray-900 px-3 py-2 rounded hover:bg-gray-200" href="/about">About</a>
+                {% if '_id' not in session %}
+                <a class="text-gray-700 hover:text-gray-900 px-3 py-2 rounded hover:bg-gray-200" href="/signin">Sign In/Sign Up</a>
+                {% endif %}
+                {% if '_id' in session %}
+                <!-- Profile Dropdown -->
+                <div class="relative inline-block text-left">
+                    <img class="h-10 w-10 rounded-full cursor-pointer" src="{{ session['image_path'] or '../static/images/generic-user-pfp.png' }}" onclick="toggleDropdown()" alt="Profile">
+                    <div id="profileDropdown" class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 z-10" style="display: none;">
+                        <a href="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
+                        <a href="/signout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign Out</a>
                     </div>
                 </div>
-            </a>
-            {% endfor %}
+                {% endif %}
+            </div>
         </div>
-        
-        <div class="rounded-full" id="submit">
-          <input class="cursor-pointer" type="submit" value="Search" />
+    </nav>
+
+    <!-- Main Content -->
+    <div class="flex mt-10 mx-10"> <!-- Add horizontal margin -->
+
+        <!-- Search Form -->
+        <form class="w-1/3 p-8 bg-white shadow-md rounded-md" method="post" action="/home"> <!-- Increase padding -->
+            <div class="flex space-x-6 items-center mb-6"> <!-- Increase space between elements -->
+                <span class="material-icons text-gray-500">search</span>
+                <input class="flex-1 p-2 rounded border border-gray-300 focus:border-blue-500 focus:outline-none" type="search" name="doctor-name" placeholder="Search Doctor..." />
+            </div>
+            <select class="w-full p-2 mb-6 rounded border border-gray-300 focus:border-blue-500 focus:outline-none" name="doctor-specialty"> <!-- Increase margin-bottom -->
+                <option value="">All</option>
+                <option value="dermatologist">Dermatologist</option>
+                <option value="allergist">Allergist</option>
+                <option value="cardiologist">Cardiologist</option>
+                <option value="gastroenterologist">Gastroenterologist</option>
+            </select>
+            <button class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700" type="submit">Search</button>
+
+            <div class="mt-6">
+                {% for user in users %}
+                <a href="/Schedule/{{user['doc_id']}}" class="block border p-4 my-2 rounded shadow">
+                    <div class="flex items-center">
+                        <span class="material-icons text-blue-500 text-4xl mr-4">account_circle</span>
+                        <div>
+                            <h2 class="text-xl font-semibold">Dr. {{ user.payload['first_name'] }} {{ user.payload['last_name'] }}</h2>
+                            <p class="text-gray-600">
+                                {% for specialty in user.payload['specialties'] %} 
+                                    {{ specialty }} 
+                                {% endfor %}
+                            </p>
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </form>
+
+        <!-- Google Map -->
+        <div class="w-2/3 ml-10"> <!-- Increase left margin -->
+            <div class="h-96 bg-gray-300 rounded-md shadow-md" id="map"></div>
         </div>
-      </form>
-      <script src="../static/js/script.js"></script>
-      <script
+    </div>
+
+    <!-- JS Scripts -->
+    <script src="../static/js/script.js"></script>
+    
+    <script
         async
         defer
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsJY7KojcXDneWqXV1h0J891NbgFrdglE&map_ids=122517338e1e4a8&callback=initMap"
       ></script>
 
-      <script>
-      document.querySelector('.nav-element-profile').addEventListener('click',function() {
-          const dropdown = document.getElementById('profileDropdown');
-          dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
-          event.stopPropagation();
-          });
-      </script>
+    <!-- JS to handle dropdown display -->
+    <script>
+        document.querySelector('.rounded-full').addEventListener('click', function() {
+            const dropdown = document.getElementById('profileDropdown');
+            dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+            event.stopPropagation();
+        });
+    </script>
+</body>
 
-      <div id="map-view">
-        <div id="map"></div>
-      </div>
-    </div>
-  </body>
 </html>

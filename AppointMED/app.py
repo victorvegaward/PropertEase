@@ -80,7 +80,6 @@ def profile():
                     "payload.medical_coverages": medical_coverages
                 }
             })
-            user = User.get_user_by_id(user_id, mongo.db)
 
         return render_template('doctor.html', doctor=user.payload)
 
