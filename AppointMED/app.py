@@ -245,15 +245,14 @@ def signupPOST():
     if account_type == "doctor":
         payload["first_name"] = request.form.get('first_name')
         payload["last_name"] = request.form.get('last_name')
-        payload["specialties"] = request.form.getlist('specialties')
+        payload["specialties"] = request.form.getlist('specialties[]')
         payload["address"] = request.form.get('address')
-        payload["medical_coverages"] = request.form.getlist('medical_coverages')
+        payload["medical_coverages"] = request.form.getlist('medical_coverages[]')
         payload["phone_number"] = request.form.get('phone_number')
 
     # Create the user with the above payload
     created_user = User.create_user(
         bcrypt, email=email, password=password, role=account_type, payload=payload, database=mongo.db)
-
 
     session['_id'] = created_user._id
     session['user_role'] = account_type

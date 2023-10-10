@@ -79,7 +79,7 @@ body {
     background-color: rgba(0, 0, 0, 0.02);
 }
 
-.doctor-profile {
+.doctor-profile, .patient-profile {
     background-color: white;
     padding: 25px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
